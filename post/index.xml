@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Italo&#39;s Blog</title>
-    <link>/post/</link>
+    <link>/ds_portfolio/post/</link>
     <description>Recent content in Posts on Italo&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 10 Oct 2017 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/ds_portfolio/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>report1</title>
-      <link>/2017/10/report1/</link>
+      <link>/ds_portfolio/2017/10/report1/</link>
       <pubDate>Tue, 10 Oct 2017 00:00:00 +0000</pubDate>
       
-      <guid>/2017/10/report1/</guid>
+      <guid>/ds_portfolio/2017/10/report1/</guid>
       <description>Ítalo Medeiros 
 Esta análise utiliza dados de séries extraídos do IMDB. Esses dados foram organizados pelo prof. Nazareno e podem ser encontrados neste repositório.
 library(&amp;quot;tidyverse&amp;quot;) dados = read_csv(file = &amp;quot;series_from_imdb.csv&amp;quot;) 
