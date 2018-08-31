@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on Italo&#39;s Blog</title>
-    <link>/ds_portfolio/tags/</link>
-    <description>Recent content in Tags on Italo&#39;s Blog</description>
+    <title>Tags on Italo Batista</title>
+    <link>/tags/</link>
+    <description>Recent content in Tags on Italo Batista</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <language>en-US</language>
     <lastBuildDate>Thu, 23 Jul 2015 21:13:14 -0500</lastBuildDate>
     
-	<atom:link href="/ds_portfolio/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Plot</title>
-      <link>/ds_portfolio/tags/plot/</link>
+      <link>/tags/plot/</link>
       <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
       
-      <guid>/ds_portfolio/tags/plot/</guid>
+      <guid>/tags/plot/</guid>
       <description></description>
     </item>
     
     <item>
       <title>R Markdown</title>
-      <link>/ds_portfolio/tags/r-markdown/</link>
+      <link>/tags/r-markdown/</link>
       <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
       
-      <guid>/ds_portfolio/tags/r-markdown/</guid>
+      <guid>/tags/r-markdown/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Regression</title>
-      <link>/ds_portfolio/tags/regression/</link>
+      <link>/tags/regression/</link>
       <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
       
-      <guid>/ds_portfolio/tags/regression/</guid>
+      <guid>/tags/regression/</guid>
       <description></description>
     </item>
     
