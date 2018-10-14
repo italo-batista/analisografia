@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Ítalo Batista">
+<meta name="description" content="Preâmbulo Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo avaliar a popularidade de linguagens de programação no período entre 2016 e 2017 segundo dados registrados no GitHub. Essa análise serve de mote para trabalharmos conceitos de inferência, teste de hipótese, p-valor, entre outros.
+Nesta análise, iremos responder a uma pergunta já desenvolvida na análise anterior. Mas agora iremos utilizar teste de hipótese e não intervalo de confiança para respondê-la.">
+
+<meta property="og:title" content="Teste de Hipótese" />
+<meta property="og:description" content="Preâmbulo Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo avaliar a popularidade de linguagens de programação no período entre 2016 e 2017 segundo dados registrados no GitHub. Essa análise serve de mote para trabalharmos conceitos de inferência, teste de hipótese, p-valor, entre outros.
+Nesta análise, iremos responder a uma pergunta já desenvolvida na análise anterior. Mas agora iremos utilizar teste de hipótese e não intervalo de confiança para respondê-la." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/blog/teste-de-hip%C3%B3tese/" />
+
+<title>
+
+
+     Teste de Hipótese 
+
+</title>
+<link rel="canonical" href="../../blog/teste-de-hip%C3%B3tese/">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="../../css/reset.css?t=2018-10-14%2001%3a50%3a57.267168939%20-0300%20-03%20m%3d%2b0.784796961">
+    <link rel="stylesheet" href="../../css/pygments.css?t=2018-10-14%2001%3a50%3a57.267168939%20-0300%20-03%20m%3d%2b0.784796961">
+    <link rel="stylesheet" href="../../css/main.css?t=2018-10-14%2001%3a50%3a57.267168939%20-0300%20-03%20m%3d%2b0.784796961">
+    
+        <link rel="stylesheet" href="../../css/override.css?t=2018-10-14%2001%3a50%3a57.267168939%20-0300%20-03%20m%3d%2b0.784796961">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="../../img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+            <a href="../../"><img class="avatar" src="https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=50" rcset="https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=100 2x, https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=150 3x, https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=200 4x"></a>
+            
+            <a href="../../"><div class="name">Ítalo Batista</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        <li class="nav-blog"><a href="../../blog/"><span>Blog</span></a></li>
+                    
+                        <li class="nav-about"><a href="../../about/"><span>About</span></a></li>
+                    
+                        <li class="nav-code"><a href="../../code/"><span>Code</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/italo-batista" target="_blank" rel="noopener"><img class="icon" src="../../img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/italohmb" target="_blank" rel="noopener"><img class="icon" src="../../img/twitter.svg" alt="twitter" /></a>
+        
+
+	
+
+        
+
+        
+            <a href="//example.com/@you" target="_blank" rel="noopener"><img class="icon" src="../../img/mastodon.svg" alt="mastodon" /></a>
+        
+
+        
+            <a href="//linkedin.com/in/italo-batista" target="_blank" rel="noopener"><img class="icon" src="../../img/linkedin.svg" alt="linkedin" /></a>
+        
+
+        
+
+        
+            <a href="//instagram.com/italohmb" target="_blank" rel="noopener"><img class="icon" src="../../img/instagram.svg" alt="instagram" /></a>
+        
+
+        
+            <a href="//500px.com/username" target="_blank" rel="noopener"><img class="icon" src="../../img/500px.svg" alt="500px" /></a>
+        
+
+        
+
+        
+            <a href="mailto:you@example.space"><img class="icon" src="../../img/email.svg" alt="email" /></a>
+        
+
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Teste de Hipótese
+
+</div>
+
+                    <div class="initials"><a href="../../">ad</a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Mon Jan 1 0001 00:00:00 UTC'>Jan 1, 0001</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>6 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <div id="preambulo" class="section level1">
+<h1>Preâmbulo</h1>
+<p>Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo avaliar a popularidade de linguagens de programação no período entre 2016 e 2017 segundo dados registrados no GitHub. Essa análise serve de mote para trabalharmos conceitos de <em>inferência</em>, <em>teste de hipótese</em>, <em>p-valor</em>, entre outros.</p>
+<p>Nesta análise, iremos responder a uma pergunta já desenvolvida na análise anterior. Mas agora iremos utilizar <em>teste de hipótese</em> e não intervalo de confiança para respondê-la.</p>
+<p>A amostra contém informações sobre quantos usuários fizeram atividade no GitHub usando uma determinada linguagem de programação. É importante ressaltar que não temos dados de todos os repositórios nem de todos os usuários. Temos apenas uma amostra. Iremos usar técnicas de inferência para podermos fazer afirmações sobre toda a população a partir dos dados da amostra.</p>
+</div>
+<div id="pergunta" class="section level1">
+<h1>Pergunta</h1>
+<p>Iremos usar a seguinte pergunta:</p>
+<ul>
+<li>Qual trimestre do ano com a maior movimentação no github?</li>
+</ul>
+<div id="lendo-os-dados" class="section level2">
+<h2>Lendo os dados:</h2>
+<p>Apenas para ter uma ideia da amostra:</p>
+<pre class="r"><code>head(dados)</code></pre>
+<pre><code>##   file_extension month_day the_month the_year users full_date week_day
+## 1             md        18         2     2016 10279 18-2-2016   quinta
+## 2             md        17         2     2016 10208 17-2-2016   quarta
+## 3             md        27         1     2016 10118 27-1-2016   quarta
+## 4             md        16         2     2016 10045 16-2-2016    terça
+## 5             md        26         1     2016 10020 26-1-2016    terça
+## 6             md        21         3     2017 10015 21-3-2017    terça</code></pre>
+<p><a href="https://italo-batista.github.io/analisografia//2017/08/analise-inferencia-ic-p2.html">Reveja o checkpoint anterior para ver mais detalhes da distribuição dos dado</a>.</p>
+<p>Na análise anterior, haviamos chegado à conclusão de que o primeito trismestre do ano era o de maior movimentação no Github. Iremos, então, nesta análise, comparar o primeiro trismetre com os três restantes, a fim de verificar se nele a movimentação é maior do que nos outros.</p>
+</div>
+<div id="teste-de-hipotese" class="section level2">
+<h2>Teste de Hipótese</h2>
+<p>A técnica para inferência que aqui será utilizada é conhecida como Teste de Hipótese e é bastante conhecida no mundo acadêmico / científico.</p>
+<p>Para relembrar, na inferência nós fazemos suposições sobre o que não conhecemos e quantificamos o grau de certeza desta suposição. No fim das contas, tentamos concluir algo sobre uma população a partir de uma amostra desta população. No nosso caso, utilizamos os dados do GitHub (plataforma muito usada por programadores para controlar versões de seus projetos) de 2016 para concluir algo sobre o comportamento dos programadores no GitHub no geral (as pessoas programas mais no primeiro trimestre do ano).</p>
+<p>No teste de Hipótese, uma técnica de inferência (outra que já conhecemos é a Intervalo de Confiança), nós definimos uma hipótese de interesse com a qual queremos concluimr algo sobre a população a partir da amostra. A partir dessa hipótese, definimos uma hipótese nula, que é a negativa de nossa hipótese de interesse.</p>
+<ul>
+<li>Hipótese nula (H0): o teste avalia evidência contra nossa hipótese (o termo ‘nulo’ carrega o sentido de ‘não há diferença’).</li>
+<li>Hipótese alternativa (H1): no que acreditamos e queremos confirmar.</li>
+</ul>
+<p>Realizamos um experimento repetidas vezes num <em>mundo aleatório</em> (dados aleatórios de nossa amostra). O objetivo disso é tentar gerar uma situação em que não há associações entre as amostras de cada experimento repetido. Então calculamos quantas vezes há associações no mundo aleatório, para representar quantas vezes estas associações são mais fortes do que o efeito no mundo não aleatório, em que há associação.<br />
+Recapitulando, queremos provar a associação, a nossa hipótese alternativa (H1). Então realizamos experimentos em um mundo aleatório e verificamos quantas vezes ocorre associações nesse mundo aleatório.<br />
+Como produto do Teste de Hipótese, temos o P-valor. Quando realizamos o teste (repetir o experimento várias vezes), uma estatística é calculada. O p-valor é a probabilidade de obter esse valor para a estatística ou valores mais extremos. Em outras palavras, o p-valor é a probabilidade da estatística computada no teste ser obtida assumindo que a hipótese nula é verdadeira. Se frequentemente são gerados efeitos maiores no mundo aleatório, então a hipótese nula é provavelmente verdadeira.<br />
+Se a probabilidade de obter esse valor para a estatística é muito baixo (menor que o nível de significância do teste), é uma evidência que a hipótese nula deve ser rejeitada. Ou seja, quanto menor o p-valor, maior a evidência contra a hipótese nula. A hipótese nula é improvável quando o efeito do mundo aleatório não repete o mundo em que há associação. Noutras palavras, quanto menor p valor, maior a probabilidade do experimento que eu quero confirmar acontecer.</p>
+<p>Resumidamente, o teste de hipótese envolve:</p>
+<ul>
+<li>Formulamos hipóteses nula e alternativa.<br />
+</li>
+<li>Realizamos experimentos.<br />
+</li>
+<li>Escolhemos um teste estatístico e definimos um nível de significância.<br />
+</li>
+<li>Computamos a estatística e identificamos o p-valor.<br />
+</li>
+<li>Comparamos o p-valor com o nível de significância.</li>
+</ul>
+<p>O teste de hipótese só pode ou rejeitar a hipótese nula ou não rejeitá-la. Nesse segundo caso, contudo, não estamos provando que a hipótese nula é verdadeira. Apenas não encontramos evidência suficientes para rejeitá-la.</p>
+<p>No nosso caso: <strong>H0</strong>: não há diferença de movimentação entre o primeito trismetre e o i-trimestre (i variando de 2 a 4). <strong>H1</strong>: há diferença considerável de movimentação entre o primeito trismetre e o i-trimestre (i variando de 2 a 4).</p>
+</div>
+<div id="o-primeiro-trimestre-do-ano-e-aquele-com-maior-movimentacao-no-github" class="section level2">
+<h2>O primeiro trimestre do ano é aquele com maior movimentação no github?</h2>
+<p>Vamos usar os dados entre os anos apenas do ano 2016.</p>
+<pre class="r"><code>dados.2016 = dados %&gt;% filter(the_year == 2016)
+
+trimestre = function(p) {
+  anw = ifelse(p &lt;= 3, 1, 
+               ifelse(p &gt; 3 &amp; p &lt;= 6, 2,
+                      ifelse(p &gt; 6 &amp; p &lt;= 9, 3, 4)
+               )
+        )
+  return(anw)
+}
+
+dados.2016$trimestre = trimestre(dados.2016$the_month)
+
+dados.2016.trim_1 = dados.2016 %&gt;% filter(trimestre == 1)
+dados.2016.trim_2 = dados.2016 %&gt;% filter(trimestre == 2)
+dados.2016.trim_3 = dados.2016 %&gt;% filter(trimestre == 3)
+dados.2016.trim_4 = dados.2016 %&gt;% filter(trimestre == 4)</code></pre>
+<p>Realizando os testes de hióteses para:</p>
+<ul>
+<li>O primeiro trimestre tem maior movimentação que o <em>segundo</em>?</li>
+<li>O primeiro trimestre tem maior movimentação que o <em>terceiro</em>?</li>
+<li>O primeiro trimestre tem maior movimentação que o <em>quarto</em>?</li>
+</ul>
+<pre class="r"><code>experiment1_2 = permutationTest2(data=dados.2016.trim_1, statistic=median(users), data2=dados.2016.trim_2)
+experiment1_3 = permutationTest2(data=dados.2016.trim_1, statistic=median(users), data2=dados.2016.trim_3)
+experiment1_4 = permutationTest2(data=dados.2016.trim_1, statistic=median(users), data2=dados.2016.trim_4)</code></pre>
+<p>Vamos ver o P-VALOR para cada um dos experimentos:</p>
+<pre class="r"><code>experiment1_2$stats %&gt;% t()</code></pre>
+<pre><code>##             median(users): dados.2016.trim_1-dados.2016.trim_2
+## Observed    &quot;128.5&quot;                                           
+## Mean        &quot;0.1475148&quot;                                       
+## Alternative &quot;two.sided&quot;                                       
+## PValue      &quot;0.0034&quot;</code></pre>
+<p>P-VALOR: 0.0042</p>
+<pre class="r"><code>experiment1_3$stats %&gt;% t()</code></pre>
+<pre><code>##             median(users): dados.2016.trim_1-dados.2016.trim_3
+## Observed    &quot;182.5&quot;                                           
+## Mean        &quot;0.9521452&quot;                                       
+## Alternative &quot;two.sided&quot;                                       
+## PValue      &quot;6e-04&quot;</code></pre>
+<p>P-VALOR: 0.0004</p>
+<pre class="r"><code>experiment1_4$stats %&gt;% t()</code></pre>
+<pre><code>##             median(users): dados.2016.trim_1-dados.2016.trim_4
+## Observed    &quot;184.5&quot;                                           
+## Mean        &quot;0.59991&quot;                                         
+## Alternative &quot;two.sided&quot;                                       
+## PValue      &quot;8e-04&quot;</code></pre>
+<p>P-VALOR: 0.0006</p>
+<p>Como p-valor deu baixo (&lt; 0.05) em todas as três situações, então no meu mundo aleatório {0.42, 0.04 e 0.06} % das vezes não ocorre o que eu quero atestar com a hipótese nula. Como esse valor é menor que o grau de confiança (&lt; 0.05), eu rejeito a hipótese nula. Nesse sentido, não temos evidências suficientes para dizer que a não há diferência muito grante entre a movimentação do primeiro trimestre e alguns dos outros trê (relembre nossa hipóteses H0 e H1). Nesse sentido, é provável (ou é estatisticamente considerável) que a diferença entre o primeiro trimestre do ano e o outros seja alta/significativa.<br />
+Esse resultado é compatível com a pergunta 2 da nossa <a href="https://italo-batista.github.io/analisografia//2017/08/analise-inferencia-ic-p2.html">última análise</a>, feita com Intervalos de Confiança, em que nos questionamos sobre qual era o trimestre com maior movimentação no github e descobrimos que era o primeiro!</p>
+</div>
+</div>
+
+                <br>
+                
+                <p class="back-to-posts"><a href="../../blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-italo-batista-github-io-analisografia" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-123-45', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+

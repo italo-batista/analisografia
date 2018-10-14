@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Ítalo Batista">
+<meta name="description" content="Preâmbulo Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo avaliar a popularidade de linguagens de programação no período entre 2016 e 2017 segundo dados registrados no GitHub. Essa análise serve de mote para trabalharmos conceitos de inferência, intervalos de confiança, significância, entre outros.
+Usaremos uma amostra de dados que contém informações sobre quantos usuários fizeram atividade no GitHub usando uma determinada linguagem de programação.">
+
+<meta property="og:title" content="Técnicas de Inferência" />
+<meta property="og:description" content="Preâmbulo Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo avaliar a popularidade de linguagens de programação no período entre 2016 e 2017 segundo dados registrados no GitHub. Essa análise serve de mote para trabalharmos conceitos de inferência, intervalos de confiança, significância, entre outros.
+Usaremos uma amostra de dados que contém informações sobre quantos usuários fizeram atividade no GitHub usando uma determinada linguagem de programação." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/blog/t%C3%A9cnicas-de-infer%C3%AAncia/" /><meta property="article:published_time" content="2017-07-25T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2017-07-25T00:00:00&#43;00:00"/>
+
+<title>
+
+
+     Técnicas de Inferência 
+
+</title>
+<link rel="canonical" href="../../blog/t%C3%A9cnicas-de-infer%C3%AAncia/">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="../../css/reset.css?t=2018-10-14%2001%3a50%3a57.241603433%20-0300%20-03%20m%3d%2b0.759231456">
+    <link rel="stylesheet" href="../../css/pygments.css?t=2018-10-14%2001%3a50%3a57.241603433%20-0300%20-03%20m%3d%2b0.759231456">
+    <link rel="stylesheet" href="../../css/main.css?t=2018-10-14%2001%3a50%3a57.241603433%20-0300%20-03%20m%3d%2b0.759231456">
+    
+        <link rel="stylesheet" href="../../css/override.css?t=2018-10-14%2001%3a50%3a57.241603433%20-0300%20-03%20m%3d%2b0.759231456">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="../../img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+            <a href="../../"><img class="avatar" src="https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=50" rcset="https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=100 2x, https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=150 3x, https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=200 4x"></a>
+            
+            <a href="../../"><div class="name">Ítalo Batista</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        <li class="nav-blog"><a href="../../blog/"><span>Blog</span></a></li>
+                    
+                        <li class="nav-about"><a href="../../about/"><span>About</span></a></li>
+                    
+                        <li class="nav-code"><a href="../../code/"><span>Code</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/italo-batista" target="_blank" rel="noopener"><img class="icon" src="../../img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/italohmb" target="_blank" rel="noopener"><img class="icon" src="../../img/twitter.svg" alt="twitter" /></a>
+        
+
+	
+
+        
+
+        
+            <a href="//example.com/@you" target="_blank" rel="noopener"><img class="icon" src="../../img/mastodon.svg" alt="mastodon" /></a>
+        
+
+        
+            <a href="//linkedin.com/in/italo-batista" target="_blank" rel="noopener"><img class="icon" src="../../img/linkedin.svg" alt="linkedin" /></a>
+        
+
+        
+
+        
+            <a href="//instagram.com/italohmb" target="_blank" rel="noopener"><img class="icon" src="../../img/instagram.svg" alt="instagram" /></a>
+        
+
+        
+            <a href="//500px.com/username" target="_blank" rel="noopener"><img class="icon" src="../../img/500px.svg" alt="500px" /></a>
+        
+
+        
+
+        
+            <a href="mailto:you@example.space"><img class="icon" src="../../img/email.svg" alt="email" /></a>
+        
+
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Técnicas de Inferência
+
+</div>
+
+                    <div class="initials"><a href="../../">ad</a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Tue Jul 25 2017 00:00:00 UTC'>Jul 25, 2017</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>6 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <div id="preambulo" class="section level2">
+<h2>Preâmbulo</h2>
+<p>Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo avaliar a popularidade de linguagens de programação no período entre 2016 e 2017 segundo dados registrados no GitHub. Essa análise serve de mote para trabalharmos conceitos de <em>inferência</em>, <em>intervalos de confiança</em>, <em>significância</em>, entre outros.</p>
+<p>Usaremos uma amostra de dados que contém informações sobre quantos usuários fizeram atividade no GitHub usando uma determinada linguagem de programação. É importante ressaltar que não temos dados de todos os repositórios nem de todos os usuários. Temos apenas uma amostra. Iremos usar técnicas de inferência para podermos fazer afirmações sobre toda a população a partir dos dados da amostra.</p>
+</div>
+<div id="perguntas" class="section level2">
+<h2>Perguntas</h2>
+<p>Iremos orientar esta análise segundo as seguintes perguntas:</p>
+<ul>
+<li><p>Para uma determinada linguagem, há uma diferença significativa na sua popularidade durante a semana e durante o fim de semana? Essa diferença é grande?</p></li>
+<li><p>Comparandao duas linguagens, existe uma diferença significativa entre elas na sua variação de popularidade nos finais de semana?</p></li>
+</ul>
+</div>
+<div id="conhecendos-os-dados" class="section level2">
+<h2>Conhecendos os dados</h2>
+<p>Vamos importar as bibliotecas que serão necessárias para a manipulação dos dados.</p>
+<p>Vamos ver quais são as linguagens de programação disponíveis para serem analisadas e vamos escolher duas para trabalharmos.</p>
+<pre class="r"><code>unique(dados$file_extension) %&gt;%
+  sort()</code></pre>
+<pre><code>##  [1] c       cc      config  cpp     cs      csproj  css     eot    
+##  [9] gif     go      gradle  h       html    ico     java    jpg    
+## [17] js      json    less    lock    m       map     md      pbxproj
+## [25] pdf     php     png     py      rb      rst     scss    sh     
+## [33] sql     svg     swift   ts      ttf     txt     woff    xml    
+## [41] yaml    yml    
+## 42 Levels: c cc config cpp cs csproj css eot gif go gradle h html ... yml</code></pre>
+<p>Selecionaremos, dentre esse conjunto diverso, as linguagens <strong>Python</strong> e <strong>Ruby</strong>.</p>
+<p>Nossos dados atualmente têm a seguinte estrutura:</p>
+<pre><code>##   file_extension month_day the_month the_year users
+## 1             py         2         3     2016  5542
+## 2             py        24         2     2016  5535
+## 3             py        10         3     2016  5531
+## 4             py        12         4     2016  5516
+## 5             py         3         3     2016  5503
+## 6             py         9         3     2016  5502</code></pre>
+<p>Cada observação contém a linguagem de programação (file_extension, que propriamente dito é a extensão do arquivo modificado no GitHub, mas, a partir dela, podemos mapear para a linguagem de programação em questão), quantos usuários fizeram atividade nessa linguagem (users) e o dia do mês (month_day), o mês (the_month) e o ano (the_year) em que ocorreram as modificações.</p>
+<p>Vamos obter, para cada observação, o dia da semana (ex: sábado) em que ocorreram as modificações. Isso vai nos ajudar a trabalhar com maior facilidade.</p>
+<p>Para entender melhor como foi a movimentação no github para essas linguagens, vamos visualizar quantos usuários fizeram movimentação por mês. Primeiro, vamos calcular o número de usuários que programaram para uma determinada linguagem em um mês-ano específico.</p>
+<p>Visualizando a “linha do tempo” para as linguagens:</p>
+<p><img src="../../blog/inferencies-report-p1_pt-br_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Para essa amostra, portanto, conseguimos observar algumas coisas interessantes. Primeiro, Python parece ser mais popular que Ruby. Contudo, ambas as linguagens não tiveram muita variação de popularidade entre janeiro de 2016 e março de 2017. Mantiveram-se regulares.</p>
+<p><br></p>
+</div>
+<div id="para-cada-uma-dessas-linguagens-ha-uma-diferenca-significativa-na-sua-popularidade-durante-a-semana-e-durante-o-fim-de-semana-essa-diferenca-e-grande" class="section level2">
+<h2>Para cada uma dessas linguagens, há uma diferença significativa na sua popularidade durante a semana e durante o fim de semana? Essa diferença é grande?</h2>
+<p>Vamos agora responder as nossas perguntas.</p>
+<p>Antes de tudo, vamos incluir nos nossos dados a informaçaõ de quando uma determinada movimentação no github foi realizada durante o fim de semana ou não.</p>
+<p>Vamos primeiro analisar o caso da linguagem Python. Com o gráfico abaixo, vamos identificar o comportamento dessa linguagem diferenciando entre dias que compõe o final de semana (sexta, sábado e domingo) e o restante dos dias.</p>
+<p><img src="../../blog/inferencies-report-p1_pt-br_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Cada ponto é um dia em que houve atividade no GitHub para a linguagem Python. Esse dia pode ter sido no final de semana ou não. Vemos que há uma concentração de dias que não são finais de semana e em que houve um número alto de usuários que programaram em Python. Em contrapartida, há uma concentração de dias que são do final de semana e em que houve um número mais baixo de usuários. Isso nos sugere que Python é mais popular em dias de semana do que em finais de semana.</p>
+<p>Como estamos trabalhando apenas com uma amostra, essa visualização não é suficiente para responder com confiança se python é mais popular no final de semana ou não. Usaremos uma técnica de inferência chamada bootstrap para coletar informações da amostra e criar um panorama onde nossas conclusões tenham cerca de 95% de confiança.</p>
+<p>Em linha gerais, a técnica bootstrap funciona da seguinte maneira: 1. Reescreve um conjunto de dados do mesmo tamanho da amostra original n vezes. 2. Calcula a estatísca para cada amostra gerada; 3. Encontra o desvio padrão desta estatística;</p>
+<p><img src="../../blog/inferencies-report-p1_pt-br_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Vemos que os intervalos para dia de semana e final de semana não se interceptam. Além disso, para dia da semana, o intervalo atineg valores mais altos. Isso nos leva a concluir que Python é significatvivamente mais popular durante os dias da semana.</p>
+<p>Vamos agora ver a diferença para as medianas entre os dois grupos (final de semana ou não).</p>
+<p><img src="../../blog/inferencies-report-p1_pt-br_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>De acordo com este gráfico, como o intervalo de confiança é positivo e alto, podemos afirmar que a diferença de popularidade para Python entre os dias de semana e os finais de semana é significante.</p>
+<p>Agora vamos analisar para a linguagem Ruby.</p>
+<p>Visualizando seu comportamento:</p>
+<pre class="r"><code>dados.rb = dados %&gt;%
+  filter(file_extension == &quot;rb&quot;) %&gt;%
+  mutate(fds = is_weekend(week_day))
+
+dados.rb %&gt;%
+  ggplot(aes(x = fds, y = users)) +
+  geom_jitter(width = .1, color = &quot;gold3&quot;, alpha = 0.6) +
+  labs(title = &quot;Atividade de usuários Ruby&quot;, x = &quot;Fim de semana&quot;, y = &quot;Usuários&quot;) +
+  theme(plot.title = element_text(hjust = 0.5))</code></pre>
+<p><img src="../../blog/inferencies-report-p1_pt-br_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>De acordo com o gráfico, aparentemente não há grande diferença de popularidade entre dias de semana e finais de semana. Contudo, vemos alguma concentração de um número maior de usuários quando é dia de semana e uma concentraçao menor de menos usuários quando é final de semana. Aqui também vamos usar bootstrap para investigar melhor.</p>
+<p><img src="../../blog/inferencies-report-p1_pt-br_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>Aqui vemos o mesmo caos que Python. Os intervalos para dia de semana e final de semana não se interceptam. Além disso, para dia da semana, o intervalo atineg valores mais altos. Isso nos leva a concluir também que Ruby é significatvivamente mais popular durante os dias da semana.</p>
+<p>Vendo de outro modo, também vamos ver a diferença para as medianas entre os dois grupos (final de semana ou não).</p>
+<p><img src="../../blog/inferencies-report-p1_pt-br_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>O intervalo de confiança é positivo e alto. Igualmente podemos afirmar que a diferença de popularidade para Ruby entre os dias de semana e os finais de semana é significante.</p>
+</div>
+<div id="existe-uma-diferenca-significativa-entre-as-duas-linguagens-na-sua-variacao-de-popularidade-nos-finais-de-semana" class="section level2">
+<h2>Existe uma diferença significativa entre as duas linguagens na sua variação de popularidade nos finais de semana?</h2>
+<p>Respondendo a nossa segunda pergunta. Estaremos comparando a popularidade, nos fins de semana, entre as duas lingaugens, para verificar qual delas tem maior variação.</p>
+<p><img src="../../blog/inferencies-report-p1_pt-br_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>Como o intervalo é positivo e alto, podemos afirmar que há uma diferença significativa na popularidade de Python e Ruby entre os programadores nos fins de semana.</p>
+</div>
+
+                <br>
+                
+                <p class="back-to-posts"><a href="../../blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-italo-batista-github-io-analisografia" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-123-45', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+

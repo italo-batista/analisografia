@@ -35,6 +35,26 @@ require(gridExtra) library(scales) library(tidyverse) # Definindo algumas consta
     </item>
     
     <item>
+      <title>Intervalos de confiança</title>
+      <link>/blog/intervalos-de-confian%C3%A7a/</link>
+      <pubDate>Tue, 01 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/intervalos-de-confian%C3%A7a/</guid>
+      <description>Preâmbulo Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo avaliar a popularidade de linguagens de programação no período entre 2016 e 2017 segundo dados registrados no GitHub. Essa análise serve de mote para trabalharmos conceitos de inferência, intervalos de confiança, significância, entre outros.
+A amostra contém informações sobre quantos usuários fizeram atividade no GitHub usando uma determinada linguagem de programação. É importante ressaltar que não temos dados de todos os repositórios nem de todos os usuários.</description>
+    </item>
+    
+    <item>
+      <title>Técnicas de Inferência</title>
+      <link>/blog/t%C3%A9cnicas-de-infer%C3%AAncia/</link>
+      <pubDate>Tue, 25 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/t%C3%A9cnicas-de-infer%C3%AAncia/</guid>
+      <description>Preâmbulo Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo avaliar a popularidade de linguagens de programação no período entre 2016 e 2017 segundo dados registrados no GitHub. Essa análise serve de mote para trabalharmos conceitos de inferência, intervalos de confiança, significância, entre outros.
+Usaremos uma amostra de dados que contém informações sobre quantos usuários fizeram atividade no GitHub usando uma determinada linguagem de programação.</description>
+    </item>
+    
+    <item>
       <title>Agrupamento de Filmes com PCA</title>
       <link>/blog/agrupamento-de-filmes-com-pca/</link>
       <pubDate>Sat, 22 Jul 2017 00:00:00 +0000</pubDate>
@@ -105,6 +125,16 @@ Esta análise utiliza dados de séries extraídos do IMDB. Esses dados foram org
 library(&amp;quot;tidyverse&amp;quot;) dados = read_csv(file = here::here(&amp;quot;data/series_from_imdb.csv&amp;quot;)) 
  Compreendendo os dados Esses dados são referentes às avaliações que usuários deram a episódios das séries a que assistiram. Eles têm a seguinte estrutura:
  VARIÁVEL EXPLICAÇÃO * series_name &amp;lt;chr&amp;gt; Nome da série. * series_ep &amp;lt;int&amp;gt; Número do episódio na série desde o primeiro.</description>
+    </item>
+    
+    <item>
+      <title>Teste de Hipótese</title>
+      <link>/blog/teste-de-hip%C3%B3tese/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/teste-de-hip%C3%B3tese/</guid>
+      <description>Preâmbulo Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo avaliar a popularidade de linguagens de programação no período entre 2016 e 2017 segundo dados registrados no GitHub. Essa análise serve de mote para trabalharmos conceitos de inferência, teste de hipótese, p-valor, entre outros.
+Nesta análise, iremos responder a uma pergunta já desenvolvida na análise anterior. Mas agora iremos utilizar teste de hipótese e não intervalo de confiança para respondê-la.</description>
     </item>
     
   </channel>
