@@ -20,7 +20,8 @@ Vamos importar nossos dados:
 library(readr) library(here) data.ceap = read_csv(here::here(&quot;data/ceap/ceap.csv&quot;)) limit.ceap = read_csv(here::here(&quot;data/ceap/limiteMensalCEAP.csv&quot;)) Explorando dados Uma das principais variáveis do conjunto de dados a ser analisada é o valor de cada gasto feito por deputadas/os. Abaixo, o comportamento geral dessa variável(valorLíquido).
 require(gridExtra) library(scales) library(tidyverse) # Definindo algumas constantes segment." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="/blog/an%C3%A1lise-do-uso-da-ceap/" />
+<meta property="og:url" content="/blog/an%C3%A1lise-do-uso-da-ceap/" /><meta property="article:published_time" content="2018-09-10T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2018-09-10T00:00:00&#43;00:00"/>
 
 <title>
 
@@ -46,11 +47,11 @@ require(gridExtra) library(scales) library(tidyverse) # Definindo algumas consta
 
 
     
-    <link rel="stylesheet" href="../../css/reset.css?t=2018-10-13%2023%3a28%3a48.839934673%20-0300%20-03%20m%3d%2b1.169128564">
-    <link rel="stylesheet" href="../../css/pygments.css?t=2018-10-13%2023%3a28%3a48.839934673%20-0300%20-03%20m%3d%2b1.169128564">
-    <link rel="stylesheet" href="../../css/main.css?t=2018-10-13%2023%3a28%3a48.839934673%20-0300%20-03%20m%3d%2b1.169128564">
+    <link rel="stylesheet" href="../../css/reset.css?t=2018-10-13%2023%3a40%3a18.44040595%20-0300%20-03%20m%3d%2b0.413477090">
+    <link rel="stylesheet" href="../../css/pygments.css?t=2018-10-13%2023%3a40%3a18.44040595%20-0300%20-03%20m%3d%2b0.413477090">
+    <link rel="stylesheet" href="../../css/main.css?t=2018-10-13%2023%3a40%3a18.44040595%20-0300%20-03%20m%3d%2b0.413477090">
     
-        <link rel="stylesheet" href="../../css/override.css?t=2018-10-13%2023%3a28%3a48.839934673%20-0300%20-03%20m%3d%2b1.169128564">
+        <link rel="stylesheet" href="../../css/override.css?t=2018-10-13%2023%3a40%3a18.44040595%20-0300%20-03%20m%3d%2b0.413477090">
     
 
 
@@ -161,7 +162,7 @@ require(gridExtra) library(scales) library(tidyverse) # Definindo algumas consta
                 </div>
                 <div class="meta">
                     
-                    <div class="date" title='Mon Jan 1 0001 00:00:00 UTC'>Jan 1, 0001</div>
+                    <div class="date" title='Mon Sep 10 2018 00:00:00 UTC'>Sep 10, 2018</div>
                     
                     
 		    <div class="reading-time"><div class="middot"></div>10 minutes read</div>
@@ -223,7 +224,7 @@ plot4 = histogram +
   ggtitle(&quot;Escala logarítmica e sem valores extremos superiores&quot;)
 
 grid.arrange(plot1, plot2, plot3, plot4, ncol=2)</code></pre>
-<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="../../blog/ceap-report_pt-br_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>Vemos que a maioria dos gasto são de até aproximadamente 1 mil reais, havendo também alguns valores negativos (esse caso ocorre quando um gasto de bilhete aéreo compensa um outro bilhete emitido e não utilizado pelo deputado).</p>
 </div>
 <div id="perguntas" class="section level1">
@@ -270,7 +271,7 @@ ranking.expenditures %&gt;%
         legend.title = element_blank(), legend.position = &quot;top&quot;) +
     labs(title=&quot;Deputados que mais e menos gastam o auxílio da CEAP&quot;, 
        y =&quot;Gasto total&quot;, x = &quot;Nome do Parlamentar&quot;)</code></pre>
-<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="../../blog/ceap-report_pt-br_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Vemos que os valores gastos entre aqueles que mais gastaram é bastante discrepante em relação aos que menos gastaram. Em disparada, o deputado Edio Lopes gastou mais de 1 milhão de reais. Os 9 que o sucedem no ranking também gastaram mais de 1 milhão. Dos mais econômicos, o maior valor gasto no total passou apenas um pouco de 100 reais!</p>
 </div>
 <div id="quais-os-estados-cujos-deputados-gastam-mais-no-exterior-quais-os-estados-cujos-deputados-gastam-menos-no-exterior" class="section level2">
@@ -301,7 +302,7 @@ data.ceap.aggr.uf %&gt;%
   theme(legend.position = &quot;NA&quot;) +
     labs(title=&quot;Federation unities whose congressmen more and less spent abroad&quot;, 
        x =&quot;Federation Unity&quot;, y = &quot;Total Expenditure (R$)&quot;)</code></pre>
-<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="../../blog/ceap-report_pt-br_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Pelo gráfico, vemos que os estado de São Paulo, Minas Gerais, Pernambuco e Roraima são aqueles cujos deputados mamis gastam no exterior. Em São Paulo, o gasto total ultrapassou 100 mil reais. Em Roraima, aproximadamente 60 mil. É possível ver no gráfico também quais são os estados cujos deputados menos gastaram no exterior, são eles: Maranhão, Paraíba, Pará, Sergige e Espírito Santo.</p>
 </div>
 <div id="quais-os-partidos-cujos-parlamentares-mais-usam-ceap-no-estado-da-paraiba-quais-sao-os-que-menos-usam-mesmas-perguntas-considerando-valores-em-r." class="section level2">
@@ -355,7 +356,7 @@ plot2 = get_plot_qst_3(data.ceap.pb$useCEAP, title = &quot;&quot;,
                        yLab = &quot;Quantity of times used&quot;, yScaleUnity = &quot;k&quot;, yScaleRound = 1e-3)
 
 grid.arrange(plot1, plot2, ncol=2)</code></pre>
-<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="../../blog/ceap-report_pt-br_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>O PMDB lidera o uso da CEAP, tanto pela quantidade de vezes (4 mil vezes) que gerou gastos quanto pela soma do valor desses gastos (4 milhões). Como o PMDB está bem à frente de todos os outros partidos, uma hipótese é que esse partido possua a maior quantidade de deputados da Paraíba.<br />
 Uma coisa interessante é que o PP apesar de ter sido o segundo partido a usar a CEAP mais vezes (duas mil), ele não é o segundo no total dos gastos (está no 7º lugar, com pouco mais de 1 mil reais gastos). Provavelmente seus gastos geralmente têm valores muito baixos.<br />
 Os partidos PT, PSDB, PSC e PROS são aqueles que menos usaram a CEAP e menos acumularam valores gastos. O PSC e o PROS, na soma total, gastaram muito menos que 500 reais.</p>
@@ -406,7 +407,7 @@ data.ceap.month = data.ceap %&gt;%
   labs(title = &quot;The top 15 brazilian congressmen that exceeded CEAP limit more times&quot;, 
        subtitle = &quot;Grouped by UF&quot;,
        x = NULL, y = &quot;Quantity of times (months) exceeded&quot;) </code></pre>
-<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-11-1.png" width="768" /></p>
+<p><img src="../../blog/ceap-report_pt-br_files/figure-html/unnamed-chunk-11-1.png" width="768" /></p>
 <p>Pelo gráfico vemos que o deputado Eduardo Barbosa, de Minas Gerais, foi aquele que ultrapassou o limite mais vezes (21). Depois, Rômulo Gouveia, na Paraíba, ultrapassou o limite 20 meses.<br />
 São Paulo tem o maior número de deputados que estão no top 15 daqueles que ultrapassaram mais vezes o limte.</p>
 </div>
@@ -434,7 +435,7 @@ São Paulo tem o maior número de deputados que estão no top 15 daqueles que ul
         axis.text.x = element_blank(), axis.title.x = element_blank()) +
   labs(title=&quot;Federation Unities that most spent with airfares&quot;,
        y=&quot;Amount spent with airfare in R$&quot;)</code></pre>
-<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="../../blog/ceap-report_pt-br_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>São Paulo é o estado em que houve mais gastos com passagens aéreas. Isso não é esperado, visto que São Paulo está mais perto de Brasília do que a Paraíba ou Acre, que são umas das que menos gastaram com passagens aéreas. Distrito Federal, por exemplo, é o que menos gastou com esse tipo de gasto. São Paulo não somente é o estado que mais gastou como também está muito à frente do segudno estado, Amazonas. O que pode explicar esse comportamento é o fato de São Paulo ter mais habitantes que os outros estados e portanto ter mais deputados em atividade.</p>
 </div>
 <div id="escolha-tres-partidos-e-responda-quais-sao-os-tipos-de-despesa-mais-utilizados-no-uso-da-ceap-pelos-deputados-desses-partidos-mesma-pergunta-considerando-valores-em-r." class="section level2">
@@ -501,7 +502,7 @@ plot2 = data.ceap.type.exp %&gt;%
   labs(y = &quot;Quantity of times CEAP was used&quot;, x = NULL)
 
 grid.arrange(plot1, plot2, ncol=2)</code></pre>
-<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-16-1.png" width="960" /></p>
+<p><img src="../../blog/ceap-report_pt-br_files/figure-html/unnamed-chunk-16-1.png" width="960" /></p>
 <p>Para o PMDB, PSDB e PT, os deputados gastaram mais vezes com emissão de bilhetes aéreos, o que faz sentido, dado que espera-se que eles/as viajem com frequência à Brasília para cumprirem seu dever. Mas, coincidência ou não, o segundo tipo de gasto mais comum para esses partidos é o de Combustíveis e Lubrificantes.<br />
 Analisando agora o total gasto com o tipo de despesa, <em>emissão de bilhete aéreo</em> está sempre entre os primeiros, assim como <em>divulgaçaõ da atividade parlamentar</em>. Para o PT e PSDB ainda entre os primeiros está a categoria <em>manutenção de escritório de apoio à atividade parlamentar</em>.</p>
 </div>

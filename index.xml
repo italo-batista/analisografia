@@ -6,42 +6,21 @@
     <description>Recent content on Italo Batista</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Mon, 21 Dec 2015 04:05:25 -0600</lastBuildDate>
+    <lastBuildDate>Mon, 10 Sep 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Les Misérables by Victor Hugo</title>
-      <link>/blog/les-mis%C3%A9rables-by-victor-hugo/</link>
-      <pubDate>Mon, 21 Dec 2015 04:05:25 -0600</pubDate>
+      <title>Análise do uso da CEAP</title>
+      <link>/blog/an%C3%A1lise-do-uso-da-ceap/</link>
+      <pubDate>Mon, 10 Sep 2018 00:00:00 +0000</pubDate>
       
-      <guid>/blog/les-mis%C3%A9rables-by-victor-hugo/</guid>
-      <description>Although this detail has no connection whatever with the real substance of what we are about to relate, it will not be superfluous, if merely for the sake of exactness in all points, to mention here the various rumors and remarks which had been in circulation about him from the very moment when he arrived in the diocese.
-Bool True or false, that which is said of men often occupies as important a place in their lives, and above all in their destinies, as that which they do.</description>
-    </item>
-    
-    <item>
-      <title>Metamorphosis by Franz Kafka</title>
-      <link>/blog/metamorphosis-by-franz-kafka/</link>
-      <pubDate>Mon, 21 Dec 2015 04:03:46 -0600</pubDate>
-      
-      <guid>/blog/metamorphosis-by-franz-kafka/</guid>
-      <description>Part One One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin.
- He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.
- The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked.</description>
-    </item>
-    
-    <item>
-      <title>Use @ instead of HEAD</title>
-      <link>/blog/use-at-instead-of-head/</link>
-      <pubDate>Tue, 25 Aug 2015 17:09:14 -0500</pubDate>
-      
-      <guid>/blog/use-at-instead-of-head/</guid>
-      <description>I recently discovered that from git version 1.8.5 onwards, @ can replace HEAD:
-$ git reset --hard @~2 $ git rebase -i @~10 $ git diff @~2..@~3  And also in most scenarios HEAD can be left out completely, so you can say:
-$ git reset -- @{2}  instead of:
-$ git reset -- HEAD@{2}  It takes some getting used to, but it&amp;rsquo;s definitely faster than typing HEAD.</description>
+      <guid>/blog/an%C3%A1lise-do-uso-da-ceap/</guid>
+      <description>A CEAP (Cota para Exercício da Atividade Parlamentar) é um auxílio que deputados e deputadas recebem. Nesta análise vamos explorar como esse auxílio vem sendo utilizado.
+Vamos importar nossos dados:
+library(readr) library(here) data.ceap = read_csv(here::here(&amp;quot;data/ceap/ceap.csv&amp;quot;)) limit.ceap = read_csv(here::here(&amp;quot;data/ceap/limiteMensalCEAP.csv&amp;quot;)) Explorando dados Uma das principais variáveis do conjunto de dados a ser analisada é o valor de cada gasto feito por deputadas/os. Abaixo, o comportamento geral dessa variável(valorLíquido).
+require(gridExtra) library(scales) library(tidyverse) # Definindo algumas constantes segment.</description>
     </item>
     
     <item>
@@ -53,18 +32,6 @@ $ git reset -- HEAD@{2}  It takes some getting used to, but it&amp;rsquo;s defin
       <description>This website is a personal homepage.
 The site is built with Hugo—a static site generator made with Go. The website source code is available on GitHub. It uses the cocoa theme. The posts are written in Markdown.
 The primary font face is Open Sans and the monospace font face is Ubuntu Mono. The social icons are from the Ionicons font set. CSS classes for code syntax highlighting are inserted during compile-time by Hugo using Pygments.</description>
-    </item>
-    
-    <item>
-      <title>Análise do uso da CEAP</title>
-      <link>/blog/an%C3%A1lise-do-uso-da-ceap/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/blog/an%C3%A1lise-do-uso-da-ceap/</guid>
-      <description>A CEAP (Cota para Exercício da Atividade Parlamentar) é um auxílio que deputados e deputadas recebem. Nesta análise vamos explorar como esse auxílio vem sendo utilizado.
-Vamos importar nossos dados:
-library(readr) library(here) data.ceap = read_csv(here::here(&amp;quot;data/ceap/ceap.csv&amp;quot;)) limit.ceap = read_csv(here::here(&amp;quot;data/ceap/limiteMensalCEAP.csv&amp;quot;)) Explorando dados Uma das principais variáveis do conjunto de dados a ser analisada é o valor de cada gasto feito por deputadas/os. Abaixo, o comportamento geral dessa variável(valorLíquido).
-require(gridExtra) library(scales) library(tidyverse) # Definindo algumas constantes segment.</description>
     </item>
     
   </channel>

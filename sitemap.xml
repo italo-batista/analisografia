@@ -3,18 +3,8 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/blog/les-mis%C3%A9rables-by-victor-hugo/</loc>
-    <lastmod>2015-12-21T04:05:25-06:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/blog/metamorphosis-by-franz-kafka/</loc>
-    <lastmod>2015-12-21T04:03:46-06:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/blog/use-at-instead-of-head/</loc>
-    <lastmod>2015-08-25T17:09:14-05:00</lastmod>
+    <loc>/blog/an%C3%A1lise-do-uso-da-ceap/</loc>
+    <lastmod>2018-09-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -38,17 +28,13 @@
   </url>
   
   <url>
-    <loc>/blog/an%C3%A1lise-do-uso-da-ceap/</loc>
-  </url>
-  
-  <url>
     <loc>/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/</loc>
-    <lastmod>2015-12-21T04:05:25-06:00</lastmod>
+    <lastmod>2018-09-10T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
