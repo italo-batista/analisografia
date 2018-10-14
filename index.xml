@@ -35,6 +35,28 @@ require(gridExtra) library(scales) library(tidyverse) # Definindo algumas consta
     </item>
     
     <item>
+      <title>Analisando avaliações de usuários do IMDB para séries — PARTE 4</title>
+      <link>/blog/analisando-avalia%C3%A7%C3%B5es-de-usu%C3%A1rios-do-imdb-para-s%C3%A9ries--parte-4/</link>
+      <pubDate>Sat, 10 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/analisando-avalia%C3%A7%C3%B5es-de-usu%C3%A1rios-do-imdb-para-s%C3%A9ries--parte-4/</guid>
+      <description>O gráfico a seguir utiliza dados de séries extraídos do IMDB. Nele estão desenhados dados de um conjunto específico de séries (Arrow, Dexter, Game of Thrones, Prison Break, Vikings). Com o gráfico, é possível ver o comportamento específico de uma série (como os seus episódios foram avaliados ao longo da série), além de comparar entre séries. Qual série teria sido melhor avaliada no geral?</description>
+    </item>
+    
+    <item>
+      <title>Analisando avaliações de usuários do IMDB para séries — PARTE 3</title>
+      <link>/blog/analisando-avalia%C3%A7%C3%B5es-de-usu%C3%A1rios-do-imdb-para-s%C3%A9ries--parte-3/</link>
+      <pubDate>Tue, 30 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/analisando-avalia%C3%A7%C3%B5es-de-usu%C3%A1rios-do-imdb-para-s%C3%A9ries--parte-3/</guid>
+      <description>Ítalo Medeiros 
+Esta análise utiliza dados de séries extraídos do IMDB. Esses dados foram organizados pelo prof. Nazareno e podem ser encontrados neste repositório.
+library(&amp;quot;tidyverse&amp;quot;) library(&amp;quot;plotly&amp;quot;) dados = read_csv(file = here::here(&amp;quot;data/series_from_imdb.csv&amp;quot;)) 
+ Compreendendo os dados Esses dados são referentes às avaliações que usuários deram a episódios das séries a que assistiram. Eles têm a seguinte estrutura:
+ VARIÁVEL EXPLICAÇÃO * series_name &amp;lt;chr&amp;gt; Nome da série.</description>
+    </item>
+    
+    <item>
       <title>Analisando avaliações de usuários do IMDB para séries — PARTE 2</title>
       <link>/blog/analisando-avalia%C3%A7%C3%B5es-de-usu%C3%A1rios-do-imdb-para-s%C3%A9ries--parte-2/</link>
       <pubDate>Sat, 20 May 2017 00:00:00 +0000</pubDate>
