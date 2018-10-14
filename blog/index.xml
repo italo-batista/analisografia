@@ -45,14 +45,15 @@ $ git reset -- HEAD@{2}  It takes some getting used to, but it&amp;rsquo;s defin
     </item>
     
     <item>
-      <title>Hello R Markdown</title>
-      <link>/blog/hello-r-markdown/</link>
-      <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
+      <title>Análise do uso da CEAP</title>
+      <link>/blog/an%C3%A1lise-do-uso-da-ceap/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/blog/hello-r-markdown/</guid>
-      <description>R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-You can embed an R code chunk like this:
-summary(cars) ## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.98 ## 3rd Qu.</description>
+      <guid>/blog/an%C3%A1lise-do-uso-da-ceap/</guid>
+      <description>A CEAP (Cota para Exercício da Atividade Parlamentar) é um auxílio que deputados e deputadas recebem. Nesta análise vamos explorar como esse auxílio vem sendo utilizado.
+Vamos importar nossos dados:
+library(readr) library(here) data.ceap = read_csv(here::here(&amp;quot;data/ceap/ceap.csv&amp;quot;)) limit.ceap = read_csv(here::here(&amp;quot;data/ceap/limiteMensalCEAP.csv&amp;quot;)) Explorando dados Uma das principais variáveis do conjunto de dados a ser analisada é o valor de cada gasto feito por deputadas/os. Abaixo, o comportamento geral dessa variável(valorLíquido).
+require(gridExtra) library(scales) library(tidyverse) # Definindo algumas constantes segment.</description>
     </item>
     
   </channel>
