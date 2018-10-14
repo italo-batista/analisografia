@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Arthur Dent">
+<meta name="description" content="A CEAP (Cota para Exercício da Atividade Parlamentar) é um auxílio que deputados e deputadas recebem. Nesta análise vamos explorar como esse auxílio vem sendo utilizado.
+Vamos importar nossos dados:
+library(readr) library(here) data.ceap = read_csv(here::here(&quot;data/ceap/ceap.csv&quot;)) limit.ceap = read_csv(here::here(&quot;data/ceap/limiteMensalCEAP.csv&quot;)) Explorando dados Uma das principais variáveis do conjunto de dados a ser analisada é o valor de cada gasto feito por deputadas/os. Abaixo, o comportamento geral dessa variável(valorLíquido).
+require(gridExtra) library(scales) library(tidyverse) # Definindo algumas constantes segment.">
+
+<meta property="og:title" content="Análise do uso da CEAP" />
+<meta property="og:description" content="A CEAP (Cota para Exercício da Atividade Parlamentar) é um auxílio que deputados e deputadas recebem. Nesta análise vamos explorar como esse auxílio vem sendo utilizado.
+Vamos importar nossos dados:
+library(readr) library(here) data.ceap = read_csv(here::here(&quot;data/ceap/ceap.csv&quot;)) limit.ceap = read_csv(here::here(&quot;data/ceap/limiteMensalCEAP.csv&quot;)) Explorando dados Uma das principais variáveis do conjunto de dados a ser analisada é o valor de cada gasto feito por deputadas/os. Abaixo, o comportamento geral dessa variável(valorLíquido).
+require(gridExtra) library(scales) library(tidyverse) # Definindo algumas constantes segment." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/blog/an%C3%A1lise-do-uso-da-ceap/" />
+
+<title>
+
+
+     Análise do uso da CEAP 
+
+</title>
+<link rel="canonical" href="../../blog/an%C3%A1lise-do-uso-da-ceap/">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="../../css/reset.css?t=2018-10-13%2023%3a28%3a48.839934673%20-0300%20-03%20m%3d%2b1.169128564">
+    <link rel="stylesheet" href="../../css/pygments.css?t=2018-10-13%2023%3a28%3a48.839934673%20-0300%20-03%20m%3d%2b1.169128564">
+    <link rel="stylesheet" href="../../css/main.css?t=2018-10-13%2023%3a28%3a48.839934673%20-0300%20-03%20m%3d%2b1.169128564">
+    
+        <link rel="stylesheet" href="../../css/override.css?t=2018-10-13%2023%3a28%3a48.839934673%20-0300%20-03%20m%3d%2b1.169128564">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="../../img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+            <a href="../../"><img class="avatar" src="https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=50" rcset="https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=100 2x, https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=150 3x, https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=200 4x"></a>
+            
+            <a href="../../"><div class="name">Arthur Dent</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        <li class="nav-blog"><a href="../../blog/"><span>Blog</span></a></li>
+                    
+                        <li class="nav-about"><a href="../../about/"><span>About</span></a></li>
+                    
+                        <li class="nav-code"><a href="../../code/"><span>Code</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/you" target="_blank" rel="noopener"><img class="icon" src="../../img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/you" target="_blank" rel="noopener"><img class="icon" src="../../img/twitter.svg" alt="twitter" /></a>
+        
+
+	
+
+        
+
+        
+            <a href="//example.com/@you" target="_blank" rel="noopener"><img class="icon" src="../../img/mastodon.svg" alt="mastodon" /></a>
+        
+
+        
+            <a href="//linkedin.com/in/you" target="_blank" rel="noopener"><img class="icon" src="../../img/linkedin.svg" alt="linkedin" /></a>
+        
+
+        
+
+        
+            <a href="//instagram.com/you" target="_blank" rel="noopener"><img class="icon" src="../../img/instagram.svg" alt="instagram" /></a>
+        
+
+        
+            <a href="//500px.com/username" target="_blank" rel="noopener"><img class="icon" src="../../img/500px.svg" alt="500px" /></a>
+        
+
+        
+
+        
+            <a href="mailto:you@example.space"><img class="icon" src="../../img/email.svg" alt="email" /></a>
+        
+
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Análise do uso da CEAP
+
+</div>
+
+                    <div class="initials"><a href="../../">ad</a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Mon Jan 1 0001 00:00:00 UTC'>Jan 1, 0001</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>10 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <p>A CEAP (Cota para Exercício da Atividade Parlamentar) é um auxílio que deputados e deputadas recebem. Nesta análise vamos explorar como esse auxílio vem sendo utilizado.</p>
+<p>Vamos importar nossos dados:</p>
+<pre class="r"><code>library(readr)
+library(here)
+data.ceap = read_csv(here::here(&quot;data/ceap/ceap.csv&quot;))
+limit.ceap = read_csv(here::here(&quot;data/ceap/limiteMensalCEAP.csv&quot;))</code></pre>
+<div id="explorando-dados" class="section level1">
+<h1>Explorando dados</h1>
+<p>Uma das principais variáveis do conjunto de dados a ser analisada é o valor de cada gasto feito por deputadas/os. Abaixo, o comportamento geral dessa variável(valorLíquido).</p>
+<pre class="r"><code>require(gridExtra)
+library(scales)
+library(tidyverse)
+
+# Definindo algumas constantes
+segment.y = 5000
+x.init = min(data.ceap %&gt;% select(valorLíquido))
+x.end = max(data.ceap %&gt;% select(valorLíquido))
+x.3rd.qrtl = 513
+
+# Um hisogram genérico, para ser reusado nos gráficos abaixo  
+histogram = data.ceap %&gt;%
+  ggplot() +
+  geom_histogram(aes(valorLíquido)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size=8),
+        axis.title.x = element_text(size=10),
+        axis.text.y = element_text(size=8),
+        axis.title.y = element_text(size=10),
+        plot.title = element_text(hjust = 0.1, size=10))
+
+plot1 = histogram +
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +
+  scale_x_continuous(breaks = c(1000, 10000, 50000, 100000),
+                     label = unit_format(unit = &quot;k&quot;, scale = 1e-3)) +
+  theme(axis.text.x = element_text(angle=90))
+
+  plot2 = histogram +
+  scale_x_continuous(limits = c(x.init, x.3rd.qrtl), label = unit_format(unit = &quot;k&quot;, scale = 1e-3)) +
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +
+  ggtitle(&quot;Sem valores extremos superiores&quot;)
+
+plot3 = histogram +
+  scale_x_continuous(limits = c(x.init, x.end), label = unit_format(unit = &quot;k&quot;, scale = 1e-3)) +
+  scale_y_continuous(trans=&#39;log2&#39;,
+                     labels = function(x) format(x, scientific = FALSE)) +
+  ggtitle(&quot;Escala logarítmica&quot;)
+
+plot4 = histogram +
+  scale_x_continuous(limits = c(x.init, x.3rd.qrtl), label = unit_format(unit = &quot;k&quot;, scale = 1e-3)) +
+  scale_y_continuous(trans=&#39;log2&#39;,
+                     labels = function(x) format(x, scientific = FALSE)) +
+  ggtitle(&quot;Escala logarítmica e sem valores extremos superiores&quot;)
+
+grid.arrange(plot1, plot2, plot3, plot4, ncol=2)</code></pre>
+<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Vemos que a maioria dos gasto são de até aproximadamente 1 mil reais, havendo também alguns valores negativos (esse caso ocorre quando um gasto de bilhete aéreo compensa um outro bilhete emitido e não utilizado pelo deputado).</p>
+</div>
+<div id="perguntas" class="section level1">
+<h1>Perguntas</h1>
+<div id="quais-sao-os-deputados-que-gastaram-mais-dinheiro-da-ceap-quais-sao-os-mais-economicos" class="section level2">
+<h2>1. Quais são os deputados que gastaram mais dinheiro da CEAP? Quais são os mais econômicos?</h2>
+<p>Gerando o ranking dos que mais gastam e mais economizam:</p>
+<pre class="r"><code>ranking.expenditures = data.ceap %&gt;%
+  filter(valorLíquido &gt; 0) %&gt;%
+  group_by(nomeParlamentar) %&gt;%
+  summarise(totalExpenditure = sum(valorLíquido)) %&gt;%
+  ungroup() %&gt;%
+  arrange(totalExpenditure)
+
+top.spenders = ranking.expenditures %&gt;%
+  top_n(10, totalExpenditure) %&gt;%
+  mutate(expenses_gat = &quot;Spender&quot;)
+
+top.economicals = ranking.expenditures %&gt;%
+  top_n(-10, totalExpenditure) %&gt;%
+  mutate(expenses_gat = &quot;Economical&quot;)
+
+ranking.expenditures = rbind(top.spenders, top.economicals)</code></pre>
+<pre class="r"><code>expense.min = min(ranking.expenditures$totalExpenditure)
+expense.max = max(ranking.expenditures$totalExpenditure)
+
+m_breaks = ranking.expenditures %&gt;% select(totalExpenditure) %&gt;% distinct()
+
+ranking.expenditures %&gt;%
+  mutate(nomeParlamentar = reorder(nomeParlamentar, totalExpenditure)) %&gt;%
+  
+  ggplot(aes(nomeParlamentar, totalExpenditure, fill=expenses_gat, color=expenses_gat)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  geom_text(data = top.economicals, size=2.8, color=&quot;#FF6600&quot;, hjust=1.1, fontface=&quot;bold&quot;, aes(label=totalExpenditure)) +
+  geom_text(data = top.spenders, size=2.8, color=&quot;white&quot;, hjust=1.1, fontface=&quot;bold&quot;, aes(label=totalExpenditure)) +
+  coord_flip() +
+  
+  scale_y_continuous(limits = c(expense.min - 100000, expense.max)) +
+  scale_fill_manual(labels = c(&quot;10+ Econômicos&quot;, &quot;10+ Gastadores&quot;), values=c(&quot;#FF6600&quot;, &quot;#4F0C68&quot;)) +
+  scale_color_manual(labels = c(&quot;10+ Econômicos&quot;, &quot;10+ Gastadores&quot;), values=c(&quot;#FF6600&quot;, &quot;#4F0C68&quot;)) +
+  
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = -1.5),
+        legend.title = element_blank(), legend.position = &quot;top&quot;) +
+    labs(title=&quot;Deputados que mais e menos gastam o auxílio da CEAP&quot;, 
+       y =&quot;Gasto total&quot;, x = &quot;Nome do Parlamentar&quot;)</code></pre>
+<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Vemos que os valores gastos entre aqueles que mais gastaram é bastante discrepante em relação aos que menos gastaram. Em disparada, o deputado Edio Lopes gastou mais de 1 milhão de reais. Os 9 que o sucedem no ranking também gastaram mais de 1 milhão. Dos mais econômicos, o maior valor gasto no total passou apenas um pouco de 100 reais!</p>
+</div>
+<div id="quais-os-estados-cujos-deputados-gastam-mais-no-exterior-quais-os-estados-cujos-deputados-gastam-menos-no-exterior" class="section level2">
+<h2>2. Quais os estados cujos deputados gastam mais no exterior? Quais os estados cujos deputados gastam menos no exterior?</h2>
+<pre class="r"><code>require(scales)
+
+SPENT_ABROAD = 2
+
+# Gerando a quantidade total de gastos no exterior por estado
+data.ceap.aggr.uf = data.ceap %&gt;%
+  filter(tipoDocumento == SPENT_ABROAD) %&gt;%
+  group_by(sgUF) %&gt;%
+  summarise(totalExpenditure = sum(valorLíquido)) %&gt;%
+  ungroup()
+
+# Gerando plot
+data.ceap.aggr.uf %&gt;%
+  mutate(sgUF = reorder(sgUF,totalExpenditure)) %&gt;%
+  ggplot(aes(sgUF, totalExpenditure, color = totalExpenditure &gt; 0)) +
+  geom_segment(aes(x = sgUF, xend = sgUF, y = 0, yend = totalExpenditure), size = 1.1, alpha = 0.6) +
+  geom_point(size = 3.5) +
+  coord_flip() +
+  
+  scale_color_manual(values=c(&quot;#AD1457&quot;), name = &quot;&quot;) +
+  scale_y_continuous(label = unit_format(unit = &quot;k&quot;, scale = 1e-3)) + 
+
+  theme_minimal() +
+  theme(legend.position = &quot;NA&quot;) +
+    labs(title=&quot;Federation unities whose congressmen more and less spent abroad&quot;, 
+       x =&quot;Federation Unity&quot;, y = &quot;Total Expenditure (R$)&quot;)</code></pre>
+<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Pelo gráfico, vemos que os estado de São Paulo, Minas Gerais, Pernambuco e Roraima são aqueles cujos deputados mamis gastam no exterior. Em São Paulo, o gasto total ultrapassou 100 mil reais. Em Roraima, aproximadamente 60 mil. É possível ver no gráfico também quais são os estados cujos deputados menos gastaram no exterior, são eles: Maranhão, Paraíba, Pará, Sergige e Espírito Santo.</p>
+</div>
+<div id="quais-os-partidos-cujos-parlamentares-mais-usam-ceap-no-estado-da-paraiba-quais-sao-os-que-menos-usam-mesmas-perguntas-considerando-valores-em-r." class="section level2">
+<h2>3. Quais os partidos cujos parlamentares mais usam CEAP no estado da Paraíba? Quais são os que menos usam? Mesmas perguntas considerando valores em R$.</h2>
+<p>Investigando o uso de CEAP pelo partidos atuantes na Paraíba, podemos ver o seguinte comportamento:</p>
+<pre class="r"><code>require(gridExtra)
+library(scales)
+source(here::here(&quot;source_scripts/color_pallet.R&quot;))
+
+# Gerando a quantidade de uso e gasto total para deputados da Paraíba
+data.ceap.pb = data.ceap %&gt;%
+  filter(sgUF == &quot;PB&quot;) %&gt;%
+  group_by(sgPartido) %&gt;%
+  summarise(useCEAP = n(),
+         totalExpenditure = sum(valorLíquido))
+
+# Função que retorna um gráfico de barras usando os dados acima. 
+# Como entrada, você pode especificar se quer analisar o total gasto com a CEAP ou a quantidade de vezes em que foi usada.
+get_plot_qst_3 &lt;- function(yVar, title, yLab, yScaleUnity, yScaleRound) {
+  
+  y.min = 0
+  y.max = max(yVar)
+  y.padding = ifelse(yScaleUnity == &quot;k&quot;, 1e+3, 1e+6) * 0.5
+  
+  plot = data.ceap.pb %&gt;%
+    mutate(sgPartido = reorder(sgPartido, -yVar)) %&gt;%
+    ggplot(aes(sgPartido, yVar, color = sgPartido, fill = sgPartido)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    geom_text(aes(label=sgPartido), hjust=-0.25, angle=90, color=&quot;black&quot;, size=2.5) +
+
+    scale_color_drsimonj(discrete = TRUE, palette = &quot;hotpink&quot;) +
+    scale_fill_drsimonj(discrete = TRUE, palette = &quot;hotpink&quot;) + 
+    scale_y_continuous(label = unit_format(unit = yScaleUnity, scale = yScaleRound),
+                       limits = c(y.min, y.max + y.padding)) + 
+    
+    theme_minimal() +
+    labs(title=title, x =&quot;Federation Unity&quot;, y = yLab) +
+    theme(legend.position = &quot;NA&quot;,
+          axis.text.x = element_text(size=6.5),
+          axis.ticks.x = element_blank())
+  
+  return(plot)
+}
+
+# Reusando a função acima para gerar gráficos
+plot1 = get_plot_qst_3(data.ceap.pb$totalExpenditure, 
+                       title = &quot;Political parties that most use CEAP at Paraíba&quot;, 
+                       yLab = &quot;Total Expenditure (R$)&quot;, yScaleUnity = &quot;m&quot;, yScaleRound = 1e-6)
+
+plot2 = get_plot_qst_3(data.ceap.pb$useCEAP, title = &quot;&quot;, 
+                       yLab = &quot;Quantity of times used&quot;, yScaleUnity = &quot;k&quot;, yScaleRound = 1e-3)
+
+grid.arrange(plot1, plot2, ncol=2)</code></pre>
+<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>O PMDB lidera o uso da CEAP, tanto pela quantidade de vezes (4 mil vezes) que gerou gastos quanto pela soma do valor desses gastos (4 milhões). Como o PMDB está bem à frente de todos os outros partidos, uma hipótese é que esse partido possua a maior quantidade de deputados da Paraíba.<br />
+Uma coisa interessante é que o PP apesar de ter sido o segundo partido a usar a CEAP mais vezes (duas mil), ele não é o segundo no total dos gastos (está no 7º lugar, com pouco mais de 1 mil reais gastos). Provavelmente seus gastos geralmente têm valores muito baixos.<br />
+Os partidos PT, PSDB, PSC e PROS são aqueles que menos usaram a CEAP e menos acumularam valores gastos. O PSC e o PROS, na soma total, gastaram muito menos que 500 reais.</p>
+</div>
+<div id="quais-os-deputados-que-mais-ultrapassam-o-limite-de-ceap-do-seu-estado-os-dados-com-os-limites-de-ceap-por-estado-estao-disponiveis-neste-link." class="section level2">
+<h2>4. Quais os deputados que mais ultrapassam o limite de CEAP do seu estado? Os dados com os limites de CEAP por estado estão disponíveis neste link.</h2>
+<p>Cada estado possue um limite mensal diferente para o uso da CEAP. Deputados paraibanos têm um limite maior que deputados de São Paulo, por exemplo. Isso porque a Paraíba está mais distante da Câmara dos Deputados do que São Paulo está. A justificativa é que deputados de reigões mais distantes teriam que gastar mais para ir à Câmara para exercer sua atividade.</p>
+<p>Sabendo que existe esse limite, vamos ver quais foram os deputados que mais vezes ultrapassaram esse limite.</p>
+<p>Calculando quanto cada deputado gastou cada mês:</p>
+<pre class="r"><code>library(lubridate)
+
+data.ceap.month = data.ceap %&gt;%
+  mutate(month = month(dataEmissao),
+         year = year(dataEmissao)) %&gt;%
+  group_by(month, year, nomeParlamentar, sgUF) %&gt;%
+  summarise(totalExpenditureMonth = sum(valorLíquido)) %&gt;%
+  ungroup()</code></pre>
+<p>Adicionando o limite mensal aos dados:</p>
+<pre class="r"><code>data.ceap.month  = left_join(data.ceap.month, limit.ceap, by=c(&quot;sgUF&quot;=&quot;UF&quot;))</code></pre>
+<p>Avaliando por mês se um deputado ultrapassou o limte:</p>
+<pre class="r"><code>data.ceap.month$exceeded_limit = data.ceap.month$totalExpenditureMonth &gt; data.ceap.month$limite_mensal</code></pre>
+<p>Como cada estado têm um limite diferente, iremos pegar, por estado, os 4 deputados que ultrapassaram o limite mais vezes:</p>
+<pre class="r"><code>data.ceap.month.exceeded = data.ceap.month %&gt;%
+  filter(exceeded_limit == TRUE) %&gt;%
+  group_by(nomeParlamentar, sgUF) %&gt;% 
+  summarise(qntExceeded = n()) %&gt;%
+  ungroup() %&gt;%
+  group_by(sgUF) %&gt;%
+  top_n(4, qntExceeded) %&gt;% 
+  ungroup()</code></pre>
+<p>Plotando os 15 deputados que ultrapassaram o limite mais vezes, agrupando por estado:</p>
+<pre class="r"><code>data.ceap.month.exceeded %&gt;%
+  top_n(15, qntExceeded) %&gt;%
+  
+  ggplot(aes(x = reorder(nomeParlamentar, qntExceeded), 
+             y = qntExceeded, fill = qntExceeded, alpha = qntExceeded, width = 0.5)) +
+  geom_bar(stat = &quot;identity&quot;, show.legend = FALSE) +
+  
+  coord_flip() +
+  facet_wrap(~sgUF, ncol = 2, scales = &quot;free_y&quot;) +
+  scale_alpha_continuous(range = c(0.6, 1)) +
+  scale_fill_drsimonj(discrete = FALSE, palette = &quot;hot&quot;) +
+  scale_y_continuous(limits = c(0, max(data.ceap.month.exceeded$qntExceeded))) +
+  
+  theme_minimal() +
+  theme(strip.text=element_text(hjust=0, face = &quot;italic&quot;),
+        axis.text.y = element_text(size=7)) +
+  labs(title = &quot;The top 15 brazilian congressmen that exceeded CEAP limit more times&quot;, 
+       subtitle = &quot;Grouped by UF&quot;,
+       x = NULL, y = &quot;Quantity of times (months) exceeded&quot;) </code></pre>
+<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-11-1.png" width="768" /></p>
+<p>Pelo gráfico vemos que o deputado Eduardo Barbosa, de Minas Gerais, foi aquele que ultrapassou o limite mais vezes (21). Depois, Rômulo Gouveia, na Paraíba, ultrapassou o limite 20 meses.<br />
+São Paulo tem o maior número de deputados que estão no top 15 daqueles que ultrapassaram mais vezes o limte.</p>
+</div>
+<div id="quais-estados-cujos-parlamentares-gastam-mais-com-passagens-aereas" class="section level2">
+<h2>5. Quais estados cujos parlamentares gastam mais com passagens aéreas?</h2>
+<p>Calculando o gasto total com passagens aéreas por estado:</p>
+<pre class="r"><code>data.ceap.uf.airfare = data.ceap %&gt;%
+  filter(tipoDespesa == &quot;PASSAGENS AÉREAS&quot;) %&gt;%
+  group_by(sgUF) %&gt;%
+  summarise(totalExpenditure = sum(valorLíquido)) %&gt;%
+  ungroup() </code></pre>
+<pre class="r"><code>data.ceap.uf.airfare %&gt;%
+  ggplot(aes(x=reorder(sgUF, totalExpenditure), 
+             y=totalExpenditure, color=sgUF, size=totalExpenditure)) +
+  geom_point() +
+  geom_text(aes(label=sgUF), size = 3, hjust=-0.15, vjust=1.9) +
+  
+  scale_color_drsimonj(palette = &quot;mixed&quot;) +
+  scale_size_continuous(trans = &quot;log10&quot;) +
+  scale_y_continuous(label = unit_format(unit = &quot;k&quot;, scale = 1e-3),
+                     breaks = round(seq(0, max(data.ceap.uf.airfare$totalExpenditure), by = 100000),1)) + 
+  
+  theme_minimal() +
+  theme(legend.position = &quot;NA&quot;,
+        axis.text.x = element_blank(), axis.title.x = element_blank()) +
+  labs(title=&quot;Federation Unities that most spent with airfares&quot;,
+       y=&quot;Amount spent with airfare in R$&quot;)</code></pre>
+<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>São Paulo é o estado em que houve mais gastos com passagens aéreas. Isso não é esperado, visto que São Paulo está mais perto de Brasília do que a Paraíba ou Acre, que são umas das que menos gastaram com passagens aéreas. Distrito Federal, por exemplo, é o que menos gastou com esse tipo de gasto. São Paulo não somente é o estado que mais gastou como também está muito à frente do segudno estado, Amazonas. O que pode explicar esse comportamento é o fato de São Paulo ter mais habitantes que os outros estados e portanto ter mais deputados em atividade.</p>
+</div>
+<div id="escolha-tres-partidos-e-responda-quais-sao-os-tipos-de-despesa-mais-utilizados-no-uso-da-ceap-pelos-deputados-desses-partidos-mesma-pergunta-considerando-valores-em-r." class="section level2">
+<h2>6. Escolha três partidos e responda: Quais são os tipos de despesa mais utilizados no uso da CEAP pelos deputados desses partidos? Mesma pergunta considerando valores em R$.</h2>
+<p>Os três partidos escolhidos são o PMDB, o PSDB e o PT:</p>
+<pre class="r"><code>selected.pp = c(&quot;PMDB&quot;, &quot;PSDB&quot;, &quot;PT&quot;)
+
+# Gerando a quantidade de uso total e gasto total para os partidos selecionados
+data.ceap.type.exp = data.ceap %&gt;%
+  filter(sgPartido %in% selected.pp) %&gt;%
+  group_by(sgPartido, tipoDespesa) %&gt;%
+  summarise(useCEAP = n(),
+         totalExpenditure = sum(valorLíquido)) %&gt;%
+  ungroup()</code></pre>
+<p>Iremos descrever dois gráficos, que serão plotados lado a lado em seguida:</p>
+<pre class="r"><code>plot1 = data.ceap.type.exp %&gt;%
+  na.omit() %&gt;%
+  group_by(sgPartido) %&gt;%
+  top_n(3, totalExpenditure) %&gt;%
+  ungroup() %&gt;%
+
+  ggplot(aes(x = reorder(totalExpenditure, tipoDespesa), 
+             y = totalExpenditure, fill = tipoDespesa, width = 0.5)) +
+  geom_bar(stat = &quot;identity&quot;, show.legend = FALSE) +
+  geom_text(aes(label=tipoDespesa), size = 2.3, color = &quot;black&quot;, hjust = 0.9, fontface = &quot;bold&quot;) +
+  
+  coord_flip() +
+  facet_wrap(~sgPartido, ncol = 1, scales = &quot;free&quot;) +
+  scale_fill_drsimonj(discrete = TRUE, palette = &quot;cool&quot;) +
+  scale_y_continuous(label = unit_format(unit = &quot;m&quot;, scale = 1e-6),
+                     limits = c(0, max(data.ceap.type.exp$totalExpenditure))) +
+  
+  theme_minimal() +
+  theme(strip.text=element_text(hjust=0, face = &quot;italic&quot;),
+        axis.text.y = element_blank(), legend.position = &quot;NA&quot;)+
+  labs(y = &quot;Total Expenditure (R$)&quot;, x = NULL)</code></pre>
+<pre class="r"><code>require(gridExtra)
+
+# Segundo plot
+
+p2.y.max = max(data.ceap.type.exp$useCEAP)
+p2.y.scaleRound = 1e+4
+  
+plot2 = data.ceap.type.exp %&gt;%
+  na.omit() %&gt;%
+  group_by(sgPartido) %&gt;%
+  top_n(3, useCEAP) %&gt;%
+  ungroup() %&gt;%
+
+  ggplot(aes(x = reorder(useCEAP, tipoDespesa), 
+             y = useCEAP, fill = tipoDespesa, width = 0.5)) +
+  geom_bar(stat = &quot;identity&quot;, show.legend = FALSE) +
+  geom_text(aes(label=tipoDespesa), size = 2.3, color = &quot;black&quot;, hjust = 0.1, fontface = &quot;bold&quot;) +
+  
+  coord_flip() +
+  facet_wrap(~sgPartido, ncol = 1, scales = &quot;free&quot;) +
+  scale_fill_drsimonj(discrete = TRUE, palette = &quot;cool&quot;) +
+  scale_y_continuous(label = unit_format(unit = &quot;k&quot;, scale = 1e-3),
+                     limits = c(0, p2.y.max + p2.y.scaleRound)) +
+  
+  theme_minimal() +
+  theme(strip.text=element_text(hjust=0, face = &quot;italic&quot;),
+        axis.text.y = element_blank(), legend.position = &quot;NA&quot;)+
+  labs(y = &quot;Quantity of times CEAP was used&quot;, x = NULL)
+
+grid.arrange(plot1, plot2, ncol=2)</code></pre>
+<p><img src="../../blog/ceap-report_files/figure-html/unnamed-chunk-16-1.png" width="960" /></p>
+<p>Para o PMDB, PSDB e PT, os deputados gastaram mais vezes com emissão de bilhetes aéreos, o que faz sentido, dado que espera-se que eles/as viajem com frequência à Brasília para cumprirem seu dever. Mas, coincidência ou não, o segundo tipo de gasto mais comum para esses partidos é o de Combustíveis e Lubrificantes.<br />
+Analisando agora o total gasto com o tipo de despesa, <em>emissão de bilhete aéreo</em> está sempre entre os primeiros, assim como <em>divulgaçaõ da atividade parlamentar</em>. Para o PT e PSDB ainda entre os primeiros está a categoria <em>manutenção de escritório de apoio à atividade parlamentar</em>.</p>
+</div>
+</div>
+
+                <br>
+                
+                <p class="back-to-posts"><a href="../../blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-italo-batista-github-io-analisografia" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-123-45', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+
