@@ -35,6 +35,34 @@ require(gridExtra) library(scales) library(tidyverse) # Definindo algumas consta
     </item>
     
     <item>
+      <title>Agrupamento de Filmes com PCA</title>
+      <link>/blog/agrupamento-de-filmes-com-pca/</link>
+      <pubDate>Sat, 22 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/agrupamento-de-filmes-com-pca/</guid>
+      <description>library(tidyverse, warn.conflicts = F) library(rvest) library(plotly) library(cluster) library(ggdendro) library(ggfortify) library(broom) library(GGally) library(reshape2) library(gridExtra) library(factoextra) library(broom) library(ggfortify, quietly = TRUE) library(knitr, quietly = TRUE) library(highcharter) library(here) theme_set(theme_light()) Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo identificar agrupamentos em dados sobre quantidade de falas dos personagens de diferentes gêneros em filmes de hollywood.</description>
+    </item>
+    
+    <item>
+      <title>Agrupando filmes da Era de ouro de Hollywood</title>
+      <link>/blog/agrupando-filmes-da-era-de-ouro-de-hollywood/</link>
+      <pubDate>Thu, 20 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/agrupando-filmes-da-era-de-ouro-de-hollywood/</guid>
+      <description>library(tidyverse, warn.conflicts = F) library(rvest) library(plotly) library(cluster) library(ggdendro) library(ggfortify) library(broom) library(GGally) library(reshape2) library(gridExtra) library(factoextra) library(here) theme_set(theme_light()) Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo identificar agrupamentos em dados sobre quantidade de falas dos personagens de diferentes gêneros em filmes de hollywood. Essa análise serve de mote para trabalharmos com algumas técnicas de agrupamento de múltiplas (&amp;gt; 2) dimensões utilizando a técnica k-means.</description>
+    </item>
+    
+    <item>
+      <title>Filmes de Cate Blanchett - Técnicas de Agrupamento</title>
+      <link>/blog/filmes-de-cate-blanchett---t%C3%A9cnicas-de-agrupamento/</link>
+      <pubDate>Mon, 12 Jun 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/filmes-de-cate-blanchett---t%C3%A9cnicas-de-agrupamento/</guid>
+      <description>library(tidyr) library(dplyr) library(ggplot2) library(readr) library(tidyverse, warn.conflicts = F) library(rvest) library(plotly) library(cluster) library(ggdendro) library(here) theme_set(theme_light()) source(here::here(&amp;quot;source_scripts/plota_solucoes_hclust.R&amp;quot;)) Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo identificar agrupamentos sob características de Bilheteria e Avaliação dos filmes nos quais a atriz Cate Blanchett atuou. Essa análise serve de mote para trabalharmos com algumas técnicas de agrupamento hierárquico.
+Os dados sobre a atriz que iremos coletar são do site Rotten Tomatoes.</description>
+    </item>
+    
+    <item>
       <title>Analisando avaliações de usuários do IMDB para séries — PARTE 4</title>
       <link>/blog/analisando-avalia%C3%A7%C3%B5es-de-usu%C3%A1rios-do-imdb-para-s%C3%A9ries--parte-4/</link>
       <pubDate>Sat, 10 Jun 2017 00:00:00 +0000</pubDate>

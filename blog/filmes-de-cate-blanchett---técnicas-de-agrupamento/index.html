@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Ítalo Batista">
+<meta name="description" content="library(tidyr) library(dplyr) library(ggplot2) library(readr) library(tidyverse, warn.conflicts = F) library(rvest) library(plotly) library(cluster) library(ggdendro) library(here) theme_set(theme_light()) source(here::here(&quot;source_scripts/plota_solucoes_hclust.R&quot;)) Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo identificar agrupamentos sob características de Bilheteria e Avaliação dos filmes nos quais a atriz Cate Blanchett atuou. Essa análise serve de mote para trabalharmos com algumas técnicas de agrupamento hierárquico.
+Os dados sobre a atriz que iremos coletar são do site Rotten Tomatoes.">
+
+<meta property="og:title" content="Filmes de Cate Blanchett - Técnicas de Agrupamento" />
+<meta property="og:description" content="library(tidyr) library(dplyr) library(ggplot2) library(readr) library(tidyverse, warn.conflicts = F) library(rvest) library(plotly) library(cluster) library(ggdendro) library(here) theme_set(theme_light()) source(here::here(&quot;source_scripts/plota_solucoes_hclust.R&quot;)) Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo identificar agrupamentos sob características de Bilheteria e Avaliação dos filmes nos quais a atriz Cate Blanchett atuou. Essa análise serve de mote para trabalharmos com algumas técnicas de agrupamento hierárquico.
+Os dados sobre a atriz que iremos coletar são do site Rotten Tomatoes." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/blog/filmes-de-cate-blanchett---t%C3%A9cnicas-de-agrupamento/" /><meta property="article:published_time" content="2017-06-12T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2017-06-12T00:00:00&#43;00:00"/>
+
+<title>
+
+
+     Filmes de Cate Blanchett - Técnicas de Agrupamento 
+
+</title>
+<link rel="canonical" href="../../blog/filmes-de-cate-blanchett---t%C3%A9cnicas-de-agrupamento/">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="../../css/reset.css?t=2018-10-14%2000%3a57%3a20.135544841%20-0300%20-03%20m%3d%2b13.906919014">
+    <link rel="stylesheet" href="../../css/pygments.css?t=2018-10-14%2000%3a57%3a20.135544841%20-0300%20-03%20m%3d%2b13.906919014">
+    <link rel="stylesheet" href="../../css/main.css?t=2018-10-14%2000%3a57%3a20.135544841%20-0300%20-03%20m%3d%2b13.906919014">
+    
+        <link rel="stylesheet" href="../../css/override.css?t=2018-10-14%2000%3a57%3a20.135544841%20-0300%20-03%20m%3d%2b13.906919014">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="../../img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+            <a href="../../"><img class="avatar" src="https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=50" rcset="https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=100 2x, https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=150 3x, https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=200 4x"></a>
+            
+            <a href="../../"><div class="name">Ítalo Batista</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        <li class="nav-blog"><a href="../../blog/"><span>Blog</span></a></li>
+                    
+                        <li class="nav-about"><a href="../../about/"><span>About</span></a></li>
+                    
+                        <li class="nav-code"><a href="../../code/"><span>Code</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/italo-batista" target="_blank" rel="noopener"><img class="icon" src="../../img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/italohmb" target="_blank" rel="noopener"><img class="icon" src="../../img/twitter.svg" alt="twitter" /></a>
+        
+
+	
+
+        
+
+        
+            <a href="//example.com/@you" target="_blank" rel="noopener"><img class="icon" src="../../img/mastodon.svg" alt="mastodon" /></a>
+        
+
+        
+            <a href="//linkedin.com/in/italo-batista" target="_blank" rel="noopener"><img class="icon" src="../../img/linkedin.svg" alt="linkedin" /></a>
+        
+
+        
+
+        
+            <a href="//instagram.com/italohmb" target="_blank" rel="noopener"><img class="icon" src="../../img/instagram.svg" alt="instagram" /></a>
+        
+
+        
+            <a href="//500px.com/username" target="_blank" rel="noopener"><img class="icon" src="../../img/500px.svg" alt="500px" /></a>
+        
+
+        
+
+        
+            <a href="mailto:you@example.space"><img class="icon" src="../../img/email.svg" alt="email" /></a>
+        
+
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Filmes de Cate Blanchett - Técnicas de Agrupamento
+
+</div>
+
+                    <div class="initials"><a href="../../">ad</a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Mon Jun 12 2017 00:00:00 UTC'>Jun 12, 2017</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>7 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <pre class="r"><code>library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(tidyverse, warn.conflicts = F)
+library(rvest)
+library(plotly)
+library(cluster)
+library(ggdendro)
+library(here)
+theme_set(theme_light())
+source(here::here(&quot;source_scripts/plota_solucoes_hclust.R&quot;))</code></pre>
+<p>Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo identificar agrupamentos sob características de Bilheteria e Avaliação dos filmes nos quais a atriz Cate Blanchett atuou. Essa análise serve de mote para trabalharmos com algumas técnicas de <strong>agrupamento hierárquico</strong>.</p>
+<p>Os dados sobre a atriz que iremos coletar são do site Rotten Tomatoes.</p>
+<pre class="r"><code>from_page &lt;- read_html(&quot;https://www.rottentomatoes.com/celebrity/cate_blanchett&quot;) %&gt;% 
+    html_node(&quot;#filmographyTbl&quot;) %&gt;%
+    html_table(fill=TRUE) %&gt;% # Faz parse
+    as.tibble()
+
+filmes = from_page %&gt;% 
+    filter(RATING != &quot;No Score Yet&quot;, 
+           `BOX OFFICE` != &quot;—&quot;, 
+           CREDIT != &quot;Executive Producer&quot;) %&gt;%
+    mutate(RATING = as.numeric(gsub(&quot;%&quot;, &quot;&quot;, RATING)), 
+           `BOX OFFICE` = as.numeric(gsub(&quot;[$|M]&quot;, &quot;&quot;, `BOX OFFICE`))) %&gt;% 
+    filter(`BOX OFFICE` &gt;= 1) # Tem dois filmes que não parecem ter sido lançados no mundo todo</code></pre>
+<div id="conhecendo-os-dados" class="section level2">
+<h2>Conhecendo os dados</h2>
+<p>Vamos inicialmente entender a estrutura dos dados:</p>
+<pre class="r"><code>filmes %&gt;% head()</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   RATING TITLE                         CREDIT           `BOX OFFICE`  YEAR
+##    &lt;dbl&gt; &lt;chr&gt;                         &lt;chr&gt;                   &lt;dbl&gt; &lt;int&gt;
+## 1   92.0 Thor: Ragnarok                Hela                   315     2017
+## 2   95.0 Carol                         Carol Aird               8.60  2015
+## 3   62.0 Truth                         Mary Mapes               1.60  2015
+## 4   83.0 Cinderella                    The Wicked Step…       183     2015
+## 5   59.0 The Hobbit: The Battle of th… Galadriel              188     2014
+## 6   91.0 How to Train Your Dragon 2    Valka                  147     2014</code></pre>
+<p>Cada observação é um filme, que possui uma avaliação (entre 0 e 100), o título do filme, o nome do papel que Cate Blanchett atuou, a bilheteria do filme e o ano de lançamento.</p>
+<p>Nesta análise, estaremos interessados em identificar grupos entre esses filmes sob as variáveis <em>rating</em> e <em>box office</em> (grupos de duas dimensões). Nesse sentido, vamos ver como essas variáveis se comportam.</p>
+</div>
+<div id="explorando-os-dados" class="section level2">
+<h2>Explorando os dados</h2>
+<div id="rating" class="section level3">
+<h3>Rating</h3>
+<p>Vamos visualizar os dados para Rating.</p>
+<pre class="r"><code>filmes %&gt;% 
+  ggplot(aes(x = &quot;Filmes&quot;, y = RATING)) + 
+  geom_jitter(width = .02, height = 0, size = 2, alpha = .6, color=&quot;#EB6841&quot;) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  labs(title=&quot;Gráfico 01 - Comportamento da var Rating (Avaliação)&quot;, x= element_blank())</code></pre>
+<p><img src="../../blog/clustering-report-p1_pt-br_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Visualmente, os filmes estão bem dispersos rem relação à sua avaliação, porém com alguns pequenos grupos (filmes que possuem rating próximos).</p>
+</div>
+<div id="box-office" class="section level3">
+<h3>Box Office</h3>
+<p>Repetindo o processo para a variávei Box Office (tr: Bilheteria).</p>
+<pre class="r"><code>filmes %&gt;% 
+  ggplot(aes(x = &quot;Filmes&quot;, y = `BOX OFFICE`)) + 
+  geom_jitter(width = .02, height = 0, size = 2, alpha = .6, color=&quot;#036564&quot;) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  labs(title=&quot;Gráfico 02 - Comportamento da var Box Office (bliheteria)&quot;, x= element_blank())</code></pre>
+<p><img src="../../blog/clustering-report-p1_pt-br_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Aqui, os dados estão um pouco menos dispersos, com alguns grupos mais definidos.</p>
+</div>
+</div>
+<div id="agrupamento-hierarquico-de-duas-dimensoes" class="section level2">
+<h2>Agrupamento Hierárquico de duas dimensões</h2>
+<p>Agora, vamos utilizar algumas técnicas de agrupamento hierárquico de duas dimensões para identificar grupos de filmes definidos sob as características Rating e Box Office.</p>
+<p>Primeiro, vamos entender como se comportam segundo essas duas variáveis juntas!</p>
+<pre class="r"><code>filmes %&gt;% 
+  ggplot(aes(x = RATING, y = `BOX OFFICE`, label = TITLE)) + 
+  geom_point(color=&quot;#EDC951&quot;, size=4, alpha=0.8) + 
+  theme(plot.title = element_text(hjust = 0.5)) +
+  labs(title=&quot;Gráfico 03 - Comportamento das vars Box Office e Rating juntas&quot;, 
+       x=&quot;Avaliação do filme&quot;, y=&quot;Bilheteria do filme&quot;)</code></pre>
+<p><img src="../../blog/clustering-report-p1_pt-br_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Como vemos, os dados de bilheteria variam bastante (eixo vertical), deixando os pontos dispersos. Nesse sentido, vamos aplicar a função log aos dados de bilheteria, de modo que essa alta variação em bilheteria tenha pouca influência quando formos identificar grupos de filmes.</p>
+<pre class="r"><code>filmes %&gt;% 
+  ggplot(aes(x=RATING, y=`BOX OFFICE`, label = TITLE)) + 
+  geom_point(color=&quot;purple&quot;, size=4, alpha=0.8) + 
+  scale_y_log10() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  labs(title=&quot;Gráfico 04 - Comportamento das vars Box Office e Rating juntas&quot;, 
+       x=&quot;Avaliação do filme&quot;, y=&quot;Bilheteria do filme&quot;)</code></pre>
+<p><img src="../../blog/clustering-report-p1_pt-br_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>filmes_scale = filmes %&gt;% mutate(`BOX OFFICE` = log10(`BOX OFFICE`))</code></pre>
+<p>Calculando os grupos:</p>
+<pre class="r"><code>agrupamento_h_2d_complete = filmes_scale %&gt;% 
+    column_to_rownames(&quot;TITLE&quot;) %&gt;%
+    dist(method = &quot;euclidean&quot;) %&gt;% 
+    hclust(method = &quot;complete&quot;)</code></pre>
+<p>Note que estamos utilizando log de Box Office. Note também que estamos utilizando o método euclidiano na função dist(). Esta função calcula distâncias e retorna uma matriz de distâncias. O argumento do método especifica a métrica de distância a ser usada. Outro método que poderia ser utilizado é o “manhattan”, mas usualmente se usa o euclidiano. Ainda no trecho de código acima, logo após calcular a distância, nós fazemos um agrupamento hierárquico (note a função hclust()). Para isso, estamos utilizando o método “complete”. Outros métodos que poderiam ser utilizados são “ward.D2”, “average”, “centroid”, “single”, dentre outros. A escolha do método define o critério de vinculação.</p>
+<p>Vamos plotar o dendograma sobre esses dados agrupados:</p>
+<pre class="r"><code>ggdendrogram(agrupamento_h_2d_complete, rotate = TRUE) +
+  labs(title=&quot;Gráfico 05 - Agrupamento (complete)&quot;)</code></pre>
+<p><img src="../../blog/clustering-report-p1_pt-br_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Para vias de comparação, vamos plotar dendogramas utilizando outros métodos de vinculação (average e single).</p>
+<pre class="r"><code>agrupamento_h_2d_average = filmes_scale %&gt;%
+    column_to_rownames(&quot;TITLE&quot;) %&gt;%
+      select(RATING, `BOX OFFICE`) %&gt;% 
+    dist(method = &quot;euclidean&quot;) %&gt;% 
+    hclust(method = &quot;average&quot;)
+
+ggdendrogram(agrupamento_h_2d_average, rotate = TRUE) +
+    labs(title=&quot;Gráfico 06 - Agrupamento (average)&quot;)</code></pre>
+<p><img src="../../blog/clustering-report-p1_pt-br_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code>agrupamento_h_2d_single = filmes_scale %&gt;% 
+    column_to_rownames(&quot;TITLE&quot;) %&gt;%
+    dist(method = &quot;euclidean&quot;) %&gt;% 
+    hclust(method = &quot;single&quot;)
+
+ggdendrogram(agrupamento_h_2d_single, rotate = TRUE) +
+    labs(title=&quot;Gráfico 07 - Agrupamento (single)&quot;)</code></pre>
+<p><img src="../../blog/clustering-report-p1_pt-br_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Ao longo desta análise, vamos utilizar o agrupamento pelo método average, pois nele a distância entre dois grupos é definida como a média entre cada ponto de um cluster para cada ponto do outor. No método complete, a distância entre dois grupos é definida como a maior distância entre dois pontos de grupos diferentes. E, no método single, como a menor distância.</p>
+<pre class="r"><code>agrupamento_h_2d = agrupamento_h_2d_average</code></pre>
+<p>No gráfico abaixo, analisamos a dissimilaridade dos agrupamentos em função do número de grupos que se deseja ter. Vemos que há uma grade (a maior) diferença entre os pontos 1 e 2, como esperado, pois se todos os dados formam um só grupo, esse grupo tende a ser bem dissimilar. A diferença entre ter 2 ou 3 grupos também é bastante significativa. A partir de 5 grupos, a dissimilaridade passa a variar menos. Nesse sentido, se quiséssemos formar a partir 5 grupos de filmes, cada grupo tenderia a ser mais homogênio entre si.</p>
+<pre class="r"><code>data.frame(k = NROW(agrupamento_h_2d$height):1, 
+           height = agrupamento_h_2d$height) %&gt;% 
+    ggplot(aes(x = k, y = height)) + 
+    geom_line(colour = &quot;grey&quot;) + 
+    geom_point() + 
+    theme(plot.title = element_text(hjust = 0.5)) +
+    labs(x = &quot;Número de clusters produzido&quot;, y = &quot;Dissimilaridade na junção&quot;,
+         title=&quot;Gráfico 08 - Dissimilaridade em função de número de grupos&quot;)</code></pre>
+<p><img src="../../blog/clustering-report-p1_pt-br_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>Contudo, para termos mais informações, vamos trabalhar com até 6 grupos nesta análise.</p>
+<pre class="r"><code>plota_hclusts_2d(agrupamento_h_2d, 
+                 filmes_scale, 
+                 c(&quot;RATING&quot;, &quot;`BOX OFFICE`&quot;), 
+                 linkage_method = &quot;average&quot;, ks = 1:6) + scale_y_log10() +
+    theme(plot.title = element_text(hjust = 0.5)) +
+    labs(title=&quot;Gráfico 09 - Grupos de filmes&quot;)</code></pre>
+<p><img src="../../blog/clustering-report-p1_pt-br_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Percebemos que quando há cinco ou mais grupos, há um ponto que constitui um único grupo. Vamos plotar um gráfico silhueta para identificar a qualidade do agrupamento.</p>
+<pre class="r"><code>distancias = filmes_scale %&gt;% 
+    column_to_rownames(&quot;TITLE&quot;) %&gt;%
+    select(RATING, `BOX OFFICE`) %&gt;% 
+    #mutate(`BOX OFFICE` = log10(`BOX OFFICE`)) %&gt;% 
+    #mutate_all(funs(scale)) %&gt;% 
+    dist(method = &quot;euclidean&quot;)
+
+plot(
+  silhouette(cutree(agrupamento_h_2d, k = 6), distancias), 
+  col=c(&quot;#CDB380&quot;, &quot;#036564&quot;, &quot;#EB6841&quot;, &quot;#EDC951&quot;, &quot;darkred&quot;, &quot;pink&quot;),
+  main=&quot;Gráfico 10 - Diagnóstico do agrupamento&quot;,
+  yaxt=&#39;n&#39;, ann=FALSE)</code></pre>
+<p><img src="../../blog/clustering-report-p1_pt-br_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>Como nenhuma barra horizontal cresce para o lado negativo, então nenhum grupo (diferenciados pelas cores) tem pontos que se aproximam mais de outros grupos do que do seu próprio. Os clusters foram bem definidos.</p>
+<p>E se normalizarmos os dados?</p>
+<pre class="r"><code>agrupamento_scale = filmes
+agrupamento_scale$RATING = scale(filmes$RATING)
+agrupamento_scale$`BOX OFFICE` = scale(filmes$`BOX OFFICE`)
+
+agrupamento_scale_h_2d = agrupamento_scale %&gt;% 
+    column_to_rownames(&quot;TITLE&quot;) %&gt;%
+    select(RATING, `BOX OFFICE`) %&gt;%
+    dist(method = &quot;euclidean&quot;) %&gt;% 
+    hclust(method = &quot;average&quot;)
+
+cluster_complete &lt;- cutree(agrupamento_scale_h_2d, k=6)
+
+plot(agrupamento_scale %&gt;% select(RATING, `BOX OFFICE`), col=cluster_complete, main=&quot;Gráfico 11 - Identificando grupos de filmes&quot;)</code></pre>
+<p><img src="../../blog/clustering-report-p1_pt-br_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>Vamos identificar alguns desses grupos.</p>
+<p>Do conjunto de 28 filmes, há um grupo de três, os identificados por rosa, que são os que possuem a maior bilheteria e a melhor avaliação. Sem muito receio, é possível afirmar que esses filmes representam a <em>trilogia</em> <strong>O Senhor dos Aneis</strong>, que, como se sabe, teve uma da maiores bilheterias recentes e foi sucesso de público e de crítica.</p>
+<p>Há outro grupo, identificado pela cor preta, de filmes que foram sucesso de crítica mas tiveram bilheteria muito abaixo da trilogia. Teriam sido filmes mais cults? Nesse meio, estão os excelentes filmes “I’m not there”, em que Cate Blanchett fez uma incrível interpretação do poeta americano Bob Dylan. Contudo, esse filme teve uma baixa bilheteria.</p>
+<p>Há um grupo também dos filmes de baixa bilheteria e de crítica. São os três identificados por azul. Dentres esses filmes, está “Elizabeth: The Golden Age”, continuação do filme Elizabeth, de 1998, que rendeu indicação ao oscar de melhor atriz principal. Contudo, sua continuação não teve boa recepção.</p>
+<p>Vamos falar de um último grupo, o identificado por azul escuro, que representam filmes que até tiveram boa bilheteria (o público gostou), mas que não ganharam os críticos, pois têm avaliação mediana. Dentre esses filmes, estão alguns da trilogia <strong>The Hobbit</strong>, que pegou carona no sucesso da trilogia O Senhor dos Aneis, mas não teve boa recepção dos críticos.</p>
+<hr />
+<p>Material de apoio usado:</p>
+<ul>
+<li><a href="https://rpubs.com/gaston/dendrograms">link1</a></li>
+<li><a href="https://github.com/nazareno/ciencia-de-dados-1/blob/master/3-Agrupamento-e-PCA/1-agrupamento-intro.Rmd">link2</a></li>
+<li><a href="https://rpubs.com/mrkm_a/ClusteringWithR">link3</a></li>
+<li><a href="http://www.saedsayad.com/clustering_hierarchical.htm">link4</a></li>
+</ul>
+</div>
+
+                <br>
+                
+                <p class="back-to-posts"><a href="../../blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-italo-batista-github-io-analisografia" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-123-45', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+

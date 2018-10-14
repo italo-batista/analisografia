@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Ítalo Batista">
+<meta name="description" content="library(tidyverse, warn.conflicts = F) library(rvest) library(plotly) library(cluster) library(ggdendro) library(ggfortify) library(broom) library(GGally) library(reshape2) library(gridExtra) library(factoextra) library(broom) library(ggfortify, quietly = TRUE) library(knitr, quietly = TRUE) library(highcharter) library(here) theme_set(theme_light()) Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo identificar agrupamentos em dados sobre quantidade de falas dos personagens de diferentes gêneros em filmes de hollywood.">
+
+<meta property="og:title" content="Agrupamento de Filmes com PCA" />
+<meta property="og:description" content="library(tidyverse, warn.conflicts = F) library(rvest) library(plotly) library(cluster) library(ggdendro) library(ggfortify) library(broom) library(GGally) library(reshape2) library(gridExtra) library(factoextra) library(broom) library(ggfortify, quietly = TRUE) library(knitr, quietly = TRUE) library(highcharter) library(here) theme_set(theme_light()) Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo identificar agrupamentos em dados sobre quantidade de falas dos personagens de diferentes gêneros em filmes de hollywood." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/blog/agrupamento-de-filmes-com-pca/" /><meta property="article:published_time" content="2017-07-22T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2017-07-22T00:00:00&#43;00:00"/>
+
+<title>
+
+
+     Agrupamento de Filmes com PCA 
+
+</title>
+<link rel="canonical" href="../../blog/agrupamento-de-filmes-com-pca/">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="../../css/reset.css?t=2018-10-14%2000%3a57%3a20.124956366%20-0300%20-03%20m%3d%2b13.896330565">
+    <link rel="stylesheet" href="../../css/pygments.css?t=2018-10-14%2000%3a57%3a20.124956366%20-0300%20-03%20m%3d%2b13.896330565">
+    <link rel="stylesheet" href="../../css/main.css?t=2018-10-14%2000%3a57%3a20.124956366%20-0300%20-03%20m%3d%2b13.896330565">
+    
+        <link rel="stylesheet" href="../../css/override.css?t=2018-10-14%2000%3a57%3a20.124956366%20-0300%20-03%20m%3d%2b13.896330565">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="../../img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+            <a href="../../"><img class="avatar" src="https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=50" rcset="https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=100 2x, https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=150 3x, https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=200 4x"></a>
+            
+            <a href="../../"><div class="name">Ítalo Batista</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        <li class="nav-blog"><a href="../../blog/"><span>Blog</span></a></li>
+                    
+                        <li class="nav-about"><a href="../../about/"><span>About</span></a></li>
+                    
+                        <li class="nav-code"><a href="../../code/"><span>Code</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/italo-batista" target="_blank" rel="noopener"><img class="icon" src="../../img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/italohmb" target="_blank" rel="noopener"><img class="icon" src="../../img/twitter.svg" alt="twitter" /></a>
+        
+
+	
+
+        
+
+        
+            <a href="//example.com/@you" target="_blank" rel="noopener"><img class="icon" src="../../img/mastodon.svg" alt="mastodon" /></a>
+        
+
+        
+            <a href="//linkedin.com/in/italo-batista" target="_blank" rel="noopener"><img class="icon" src="../../img/linkedin.svg" alt="linkedin" /></a>
+        
+
+        
+
+        
+            <a href="//instagram.com/italohmb" target="_blank" rel="noopener"><img class="icon" src="../../img/instagram.svg" alt="instagram" /></a>
+        
+
+        
+            <a href="//500px.com/username" target="_blank" rel="noopener"><img class="icon" src="../../img/500px.svg" alt="500px" /></a>
+        
+
+        
+
+        
+            <a href="mailto:you@example.space"><img class="icon" src="../../img/email.svg" alt="email" /></a>
+        
+
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Agrupamento de Filmes com PCA
+
+</div>
+
+                    <div class="initials"><a href="../../">ad</a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Sat Jul 22 2017 00:00:00 UTC'>Jul 22, 2017</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>8 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <script src="../../rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="../../rmarkdown-libs/jquery/jquery.min.js"></script>
+<script src="../../rmarkdown-libs/proj4js/proj4.js"></script>
+<link href="../../rmarkdown-libs/highcharts/css/motion.css" rel="stylesheet" />
+<script src="../../rmarkdown-libs/highcharts/highstock.js"></script>
+<script src="../../rmarkdown-libs/highcharts/highcharts-3d.js"></script>
+<script src="../../rmarkdown-libs/highcharts/highcharts-more.js"></script>
+<script src="../../rmarkdown-libs/highcharts/modules/annotations.js"></script>
+<script src="../../rmarkdown-libs/highcharts/modules/broken-axis.js"></script>
+<script src="../../rmarkdown-libs/highcharts/modules/data.js"></script>
+<script src="../../rmarkdown-libs/highcharts/modules/drilldown.js"></script>
+<script src="../../rmarkdown-libs/highcharts/modules/exporting.js"></script>
+<script src="../../rmarkdown-libs/highcharts/modules/funnel.js"></script>
+<script src="../../rmarkdown-libs/highcharts/modules/heatmap.js"></script>
+<script src="../../rmarkdown-libs/highcharts/modules/map.js"></script>
+<script src="../../rmarkdown-libs/highcharts/modules/no-data-to-display.js"></script>
+<script src="../../rmarkdown-libs/highcharts/modules/offline-exporting.js"></script>
+<script src="../../rmarkdown-libs/highcharts/modules/solid-gauge.js"></script>
+<script src="../../rmarkdown-libs/highcharts/modules/treemap.js"></script>
+<script src="../../rmarkdown-libs/highcharts/plugins/annotations.js"></script>
+<script src="../../rmarkdown-libs/highcharts/plugins/draggable-legend.js"></script>
+<script src="../../rmarkdown-libs/highcharts/plugins/draggable-points.js"></script>
+<script src="../../rmarkdown-libs/highcharts/plugins/export-csv.js"></script>
+<script src="../../rmarkdown-libs/highcharts/plugins/grouped-categories.js"></script>
+<script src="../../rmarkdown-libs/highcharts/plugins/motion.js"></script>
+<script src="../../rmarkdown-libs/highcharts/plugins/pattern-fill-v2.js"></script>
+<script src="../../rmarkdown-libs/highcharts/plugins/tooltip-delay.js"></script>
+<script src="../../rmarkdown-libs/highcharts/custom/reset.js"></script>
+<script src="../../rmarkdown-libs/highcharts/custom/symbols-extra.js"></script>
+<script src="../../rmarkdown-libs/highcharts/custom/text-symbols.js"></script>
+<link href="../../rmarkdown-libs/fontawesome/font-awesome.min.css" rel="stylesheet" />
+<link href="../../rmarkdown-libs/htmlwdgtgrid/htmlwdgtgrid.css" rel="stylesheet" />
+<script src="../../rmarkdown-libs/highchart-binding/highchart.js"></script>
+
+
+<pre class="r"><code>library(tidyverse, warn.conflicts = F)</code></pre>
+<pre class="r"><code>library(rvest)
+library(plotly)
+library(cluster)
+library(ggdendro)
+library(ggfortify)
+library(broom)
+library(GGally)
+library(reshape2)
+library(gridExtra)
+library(factoextra)
+library(broom)
+library(ggfortify, quietly = TRUE)
+library(knitr, quietly = TRUE)
+library(highcharter)
+library(here)
+theme_set(theme_light())</code></pre>
+<p>Esta análise, realizada no contexto da disciplina Análise de Dados 1 (Computação @ UFCG), tem por objetivo identificar agrupamentos em dados sobre quantidade de falas dos personagens de diferentes gêneros em filmes de hollywood. Essa análise serve de mote para trabalharmos com algumas técnicas de <strong>agrupamento de múltiplas (&gt; 2) dimensões</strong> utilizando técnicas de <strong>Redução de dimensionalidade</strong> (Análise de Componentes Principais (ACP) ou Principal Component Analysis (PCA)).</p>
+<p>Os dados aqui utilizados foram organizados por Matthew Daniels e estão disponíveis <a href="https://github.com/matthewfdaniels/scripts">aqui</a>. É mesma base de dados que utilizamos na análise anterior! :)</p>
+<p>Faremos aqui um recorte no tempo. Analizaremos filmes das décadas de 70 e 80.</p>
+<p>Estaremos interessados em analisar os filmes segundo as seguintes características:</p>
+<ul>
+<li>tamanho do elenco</li>
+<li>proporção de homens no elenco</li>
+<li>bilheteria</li>
+<li>quantidade de palavras no filme (se um filme é mais contemplativo ou tem mais diálogos)</li>
+</ul>
+<p>Nossa base de dados:</p>
+<pre class="r"><code>head(d)</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##   script_id title            bilheteria elenco_tam prop_homens tam_dialogo
+##       &lt;int&gt; &lt;chr&gt;                 &lt;int&gt;      &lt;int&gt;       &lt;dbl&gt;       &lt;int&gt;
+## 1      1576 Alien                     6          8       0.620        8502
+## 2       666 American Graffi…        565         16       0.620        9874
+## 3       682 Annie Hall              152          9       0.560       13136
+## 4      1676 Apocalypse Now           16         17       0.940       20814
+## 5      8301 Blazing Saddles         558         10       0.900        5062
+## 6      3980 Cabaret                 219          8       0.620        5335</code></pre>
+<p>Cada observação é um filme, que possui um id (<em>script_id</em>), o título do filme (<em>title</em>), bilheteria corrigida (<em>gross</em>), tamanho do elenco (<em>elenco_tam</em>), proporção de homens no elenco (<em>prop_homens</em>), soma do número de palavras ditas por todos as personagens do filme (<em>tam_dialogo</em>).</p>
+<pre class="r"><code>d %&gt;% select(-title) %&gt;% summary()</code></pre>
+<pre><code>##    bilheteria       elenco_tam     prop_homens     tam_dialogo   
+##  Min.   :   6.0   Min.   : 6.00   Min.   :0.500   Min.   : 2566  
+##  1st Qu.: 138.0   1st Qu.: 9.00   1st Qu.:0.670   1st Qu.: 5591  
+##  Median : 285.0   Median :11.00   Median :0.750   Median : 8004  
+##  Mean   : 388.1   Mean   :11.72   Mean   :0.769   Mean   : 8399  
+##  3rd Qu.: 495.0   3rd Qu.:14.00   3rd Qu.:0.900   3rd Qu.: 9874  
+##  Max.   :1798.0   Max.   :22.00   Max.   :1.000   Max.   :20814</code></pre>
+<p>É possível perceber que as variáveis são bastante assimétricas. Vamos transformá-las de modo a termos um intervalo próximo entre elas, mas preservando proporcionalmente as diferenças entre filmes. Isos nos ajudará a criar melhores visualizações dos grupos.</p>
+<pre class="r"><code>d.temp = d
+d.temp$prop_homens = d.temp$prop_homens * 100
+d.temp$elenco_tam = d.temp$elenco_tam * 10
+d.scaled = d.temp %&gt;% 
+  select(title, bilheteria, elenco_tam, tam_dialogo, prop_homens) %&gt;%
+  mutate_each(funs(log), 2:5)</code></pre>
+<p>Vamos visualizar como os dados transformados se comportam:</p>
+<pre class="r"><code>d.scaled %&gt;% select(-title) %&gt;% ggpairs()</code></pre>
+<p><img src="../../blog/clustering-report-p3_pt-br_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Como nossos dados contêm poucos filmes (29 apenas), não conseguimos visualizar bem agrupamentos de duas dimensões em vários dos gráficos de dispersão. E apesar de termos 4 variáveis, não conseguimos ver as quatro variáveis para um ponto de uma vez nessa visualização. Nesse sentido, vamos usar redução de dimensionalidade para projetarmos em uma única visualização agrupamentos que considerem as 4 variáveis. Vamos proceder com a técnica PCA, gerando duas variáveis, PC1 e PC2, em que cada uma dessas variáveis é calculada a partir das 4 que tínhamos inicialmente, de modo a identificar grupos de filmes.</p>
+<pre class="r"><code>pr.out &lt;- prcomp(select(d.scaled, - title))
+
+autoplot(pr.out, data = d, size = 2, 
+         colour = &quot;grey&quot;,
+         loadings = TRUE, loadings.colour = &#39;goldenrod3&#39;,
+         loadings.label = TRUE, 
+         loadings.label.size = 3.5,
+         loadings.label.colour=&#39;darkslategrey&#39;)</code></pre>
+<p><img src="../../blog/clustering-report-p3_pt-br_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<blockquote>
+<p>Os vetores mostram a relação entre PC1 e PC2 e as variáveis que tínhamos inicialmente. Quanto mais alinhado for o eixo de PC1 e um vetor, maior será a variação nas variáveis dos vetores quando um ponto se mover na direção de PC1 no gráfico.</p>
+</blockquote>
+<p>Por exemplo, tam_dialogo, elenco_tam e prop_homens variam bastante quando um ponto está mais acima ou abaixo no gráfico (direção de PC2), mas não variam muito em função da posição de um ponto no eixo horizontal (direção de PC1). Bilheteria varia principalmente na medida que os pontos estão à esquerda ou à direita no gráfico (PC1).</p>
+<p>Sendo assim, por exemplo, os valores mais à esquerda e acima terão valores mais altos de tam_dialogo e elenco_tam, e valores mais baixos de bilheteria.</p>
+<p>Outra forma de ver essa mesma informação é vendo PC1 e PC2 como duas funções das 4 variáveis originais:</p>
+<pre class="r"><code>tidy(pr.out, &quot;variables&quot;) %&gt;% 
+    filter(PC &lt;= 2) %&gt;% 
+    spread(column, value)</code></pre>
+<pre><code>##   PC  bilheteria elenco_tam prop_homens  tam_dialogo
+## 1  1  0.99587597  0.0884206  0.02024491 -0.001731297
+## 2  2 -0.04445005  0.4938385  0.10343485  0.862234863</code></pre>
+<p>Os valores na tabela são os coeficientes, e a leitura é que: <span class="math inline">\(PC1 = 0.99 * bilheteria + 0.08 * elencoTam + 0.02 * propHomens - 0.01 * tamDialogo\)</span>. Isso significa, por exemplo, que mudar aumentar unidades em bilheteria aumenta PC1 e faz com que um ponto esteja mais à direita no gráfico. Aumentar as outras variáveis influencia muito pouco.</p>
+<p>Note que a variávei prop_homens influencia pouco na localização do ponto no gráfico.</p>
+<p>Parece não haver grupos bem definidos segundo as características trabalhadas. Vemos que há um filme no canto superior esquerdo, que tem um valor bastante alto para elencon_tam e tam_dialogo e um valor bastante baixo de bilheteria. Há outros dois filmes à esquerda do gráfico, que, portanto, terão valores mais baixos de bilheteria, mas no caso desses dois filmes eles também terão valores mais baixos de elenco_tam, tam_dialogo.</p>
+<p>Podemos entender que no geral os filmes, por estarem mais centralizados no gráfico, irão possuir valores semelhantes para tamanho do elenco, para bilheteria, para proporção de homens e para tamanho dos diálogos. Há apenas poucos casos que fogem dessa homogeneidade.</p>
+<blockquote>
+<p>É interessante que a gente consiga quantificar quanta informação perdemos quando formos de muitas dimensões para apenas 2. PCA faz isso comparando a variância acumulada nos PCs que você usar com a variância total existente com todas as variáveis originais nos dados.</p>
+</blockquote>
+<p>Em dados:</p>
+<pre class="r"><code>tidy(pr.out, &quot;pcs&quot;)</code></pre>
+<pre><code>##   PC   std.dev percent cumulative
+## 1  1 1.2533453 0.81759    0.81759
+## 2  2 0.5318673 0.14723    0.96483
+## 3  3 0.2136787 0.02376    0.98859
+## 4  4 0.1480564 0.01141    1.00000</code></pre>
+<p>Graficamente:</p>
+<pre class="r"><code>tidy(pr.out, &quot;pcs&quot;) %&gt;% 
+    ggplot(aes(x = PC, y = cumulative)) + 
+    geom_line() + 
+    geom_point() + 
+    labs(x = &quot;Número de PC&#39;s&quot;, 
+         y = &quot;Proporção cumulativa da variância\noriginal que esses PC&#39;s representam&quot;)</code></pre>
+<p><img src="../../blog/clustering-report-p3_pt-br_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>Portanto, com dois componentes principais conseguimos representar mais de 95% da informação original dos dados. As informações perdidas são poucas e portanto insuficientes para comprometer o uso de PCA para representar as quatro variáveis em apenas duas dimensões.</p>
+<p>Vamos utilizar o algoritmo kmeans (<a href="LINK">leia a publicação anterior, em que agrupamos os filmes utilizando esse algortimo, caso queira saber mais</a> para grupar os filmes segundo essas características.</p>
+<pre class="r"><code>set.seed(24)
+
+n_clusters = 3
+
+filmes_agrupados = d.scaled %&gt;% 
+    select(-title) %&gt;% 
+    kmeans(centers = n_clusters, nstart = 20)
+
+filmes_transformado_agrupado = filmes_agrupados %&gt;% 
+    augment(d.scaled)</code></pre>
+<p>Encontrando os componentes:</p>
+<pre class="r"><code>filmes_pca = d.scaled %&gt;% 
+    column_to_rownames(&quot;title&quot;) %&gt;% 
+    prcomp(scale = FALSE) </code></pre>
+<p>O valor dos PCs para cada ponto dos dados originais:</p>
+<pre class="r"><code>tidy(filmes_pca, &quot;samples&quot;) %&gt;% 
+    head()</code></pre>
+<pre><code>##                 row PC       value
+## 1             Alien  1 -3.67414159
+## 2 American Graffiti  1  0.91321015
+## 3        Annie Hall  1 -0.44774925
+## 4    Apocalypse Now  1 -2.62383330
+## 5   Blazing Saddles  1  0.86793833
+## 6           Cabaret  1 -0.09085796</code></pre>
+<p>Visualizando:</p>
+<pre class="r"><code>au &lt;- augment(filmes_pca, data = filmes_transformado_agrupado)
+
+au %&gt;% 
+    ggplot(aes(.fittedPC1, .fittedPC2, color = .cluster)) +
+    geom_point(size = 2, alpha = .7) +
+    scale_color_manual(name=&quot;Cluster:&quot;, values = c(&quot;3&quot;=&quot;gray48&quot;, &quot;1&quot;=&quot;goldenrod3&quot;, &quot;2&quot;=&quot;deeppink4&quot;)) +
+    labs(x = &quot;PC1&quot;, y = &quot;PC2&quot;)</code></pre>
+<p><img src="../../blog/clustering-report-p3_pt-br_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>Indicando o nome dos filmes:</p>
+<pre class="r"><code>set.seed(24)
+au %&gt;%
+    ggplot(aes(.fittedPC1, .fittedPC2, color = .cluster)) +
+    geom_point(size = .2) +
+    geom_text(aes(label = title), vjust = 1, hjust = 0, size = 3) +
+    scale_color_manual(name=&quot;Cluster:&quot;, values = c(&quot;3&quot;=&quot;gray48&quot;, &quot;1&quot;=&quot;goldenrod3&quot;, &quot;2&quot;=&quot;deeppink4&quot;)) +
+    labs(x = &quot;PC1&quot;, y = &quot;PC2&quot;)</code></pre>
+<p><img src="../../blog/clustering-report-p3_pt-br_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p>Interativo:</p>
+<pre class="r"><code>p = au %&gt;%
+    mutate(PC1 = .fittedPC1, PC2 = .fittedPC2) %&gt;%
+    hchart(&quot;scatter&quot;, hcaes(x = PC1, y = PC2, group = .cluster)) %&gt;%
+    hc_tooltip(pointFormat = &quot;&lt;b&gt;{point.title}&lt;/b&gt;&lt;br&gt;
+             tam. elenco: {point.elenco_tam:,.2f}&lt;br&gt;
+             bilheteria {point.bilheteria:,.2f}&lt;br&gt;
+             prop. homens: {point.prop_homens:,.2f}&lt;br&gt;
+             tam. dialogo: {point.tam_dialogo:,.2f}&quot;)
+p</code></pre>
+<div id="htmlwidget-1" style="width:100%;height:500px;" class="highchart html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"hc_opts":{"title":{"text":null},"yAxis":{"title":{"text":"PC2"},"type":"linear"},"credits":{"enabled":false},"exporting":{"enabled":false},"plotOptions":{"series":{"turboThreshold":0,"showInLegend":true,"marker":{"enabled":true}},"treemap":{"layoutAlgorithm":"squarified"},"bubble":{"minSize":5,"maxSize":25},"scatter":{"marker":{"symbol":"circle"}}},"annotationsOptions":{"enabledButtons":false},"tooltip":{"delayForDisplay":10,"pointFormat":"<b>{point.title}<\/b><br>\n             tam. elenco: {point.elenco_tam:,.2f}<br>\n             bilheteria {point.bilheteria:,.2f}<br>\n             prop. homens: {point.prop_homens:,.2f}<br>\n             tam. dialogo: {point.tam_dialogo:,.2f}"},"series":[{"name":"1","data":[{".rownames":"1","title":"Alien","bilheteria":1.79175946922805,"elenco_tam":4.38202663467388,"tam_dialogo":9.04805670891874,"prop_homens":4.12713438504509,".cluster":"1",".fittedPC1":-3.67414159192194,".fittedPC2":0.0821678692385443,".fittedPC3":0.119232760262409,".fittedPC4":0.0873157229455656,"PC1":-3.67414159192194,"PC2":0.0821678692385443,"x":-3.67414159192194,"y":0.0821678692385443},{".rownames":"4","title":"Apocalypse Now","bilheteria":2.77258872223978,"elenco_tam":5.13579843705026,"tam_dialogo":9.9433811161978,"prop_homens":4.54329478227,".cluster":"1",".fittedPC1":-2.62383329812717,".fittedPC2":1.22583689860011,".fittedPC3":-0.131692782230576,".fittedPC4":-0.0884774381813848,"PC1":-2.62383329812717,"PC2":1.22583689860011,"x":-2.62383329812717,"y":1.22583689860011},{".rownames":"9","title":"Hard Times","bilheteria":3.04452243772342,"elenco_tam":4.24849524204936,"tam_dialogo":8.62891344102665,"prop_homens":4.45434729625351,".cluster":"1",".fittedPC1":-2.43100192705236,".fittedPC2":-0.367015175556856,".fittedPC3":-0.0540505333754037,".fittedPC4":-0.217325578214735,"PC1":-2.43100192705236,"PC2":-0.367015175556856,"x":-2.43100192705236,"y":-0.367015175556856}],"type":"scatter"},{"name":"2","data":[{".rownames":"3","title":"Annie Hall","bilheteria":5.02388052084628,"elenco_tam":4.49980967033027,"tam_dialogo":9.48311183169221,"prop_homens":4.02535169073515,".cluster":"2",".fittedPC1":-0.447749254732086,".fittedPC2":0.361257525865965,".fittedPC3":0.534476098891789,".fittedPC4":0.0736617006561363,"PC1":-0.447749254732086,"PC2":0.361257525865965,"x":-0.447749254732086,"y":0.361257525865965},{".rownames":"6","title":"Cabaret","bilheteria":5.3890717298165,"elenco_tam":4.38202663467388,"tam_dialogo":8.58204416373585,"prop_homens":4.12713438504509,".cluster":"2",".fittedPC1":-0.0908579559643269,".fittedPC2":-0.479545120790891,".fittedPC3":0.166791579844078,".fittedPC4":0.0764413384391938,"PC1":-0.0908579559643269,"PC2":-0.479545120790891,"x":-0.0908579559643269,"y":-0.479545120790891},{".rownames":"7","title":"Escape from Alcatraz","bilheteria":4.83628190695148,"elenco_tam":4.9416424226093,"tam_dialogo":8.81996090128606,"prop_homens":4.60517018598809,".cluster":"2",".fittedPC1":-0.582620605796748,".fittedPC2":0.0759719062591471,".fittedPC3":-0.403115234830571,".fittedPC4":-0.092808686181644,"PC1":-0.582620605796748,"PC2":0.0759719062591471,"x":-0.582620605796748,"y":0.0759719062591471},{".rownames":"8","title":"Halloween","bilheteria":5.15905529921453,"elenco_tam":4.0943445622221,"tam_dialogo":8.11969625295725,"prop_homens":3.91202300542815,".cluster":"2",".fittedPC1":-0.348917261680158,".fittedPC2":-1.03229186234468,".fittedPC3":0.244098100209882,".fittedPC4":0.20913333421561,"PC1":-0.348917261680158,"PC2":-1.03229186234468,"x":-0.348917261680158,"y":-1.03229186234468},{".rownames":"13","title":"Live and Let Die","bilheteria":5.15905529921453,"elenco_tam":4.38202663467388,"tam_dialogo":7.85010354517558,"prop_homens":4.31748811353631,".cluster":"2",".fittedPC1":-0.314804891422595,".fittedPC2":-1.08073638752605,".fittedPC3":-0.294011687355639,".fittedPC4":0.0455164417688889,"PC1":-0.314804891422595,"PC2":-1.08073638752605,"x":-0.314804891422595,"y":-1.08073638752605},{".rownames":"14","title":"Logan's Run","bilheteria":4.62497281328427,"elenco_tam":4.38202663467388,"tam_dialogo":8.65469170460187,"prop_homens":4.12713438504509,".cluster":"2",".fittedPC1":-0.851931478621194,".fittedPC2":-0.382941639670712,".fittedPC3":0.144154460788,".fittedPC4":0.0833145346811009,"PC1":-0.851931478621194,"PC2":-0.382941639670712,"x":-0.851931478621194,"y":-0.382941639670712},{".rownames":"16","title":"Midnight Express","bilheteria":4.86753445045558,"elenco_tam":4.70048036579242,"tam_dialogo":8.46737249643228,"prop_homens":4.51085950651685,".cluster":"2",".fittedPC1":-0.57411951846758,".fittedPC2":-0.35828140570514,".fittedPC3":-0.347900754288824,".fittedPC4":-0.0672724310908819,"PC1":-0.57411951846758,"PC2":-0.35828140570514,"x":-0.57411951846758,"y":-0.35828140570514},{".rownames":"21","title":"The Exorcist","bilheteria":5.27299955856375,"elenco_tam":4.70048036579242,"tam_dialogo":8.75966867102994,"prop_homens":4.29045944114839,".cluster":"2",".fittedPC1":-0.175294591867758,".fittedPC2":-0.14707344771997,".fittedPC3":-0.0681792973777373,".fittedPC4":0.0611837067225011,"PC1":-0.175294591867758,"PC2":-0.14707344771997,"x":-0.175294591867758,"y":-0.14707344771997},{".rownames":"22","title":"The Getaway","bilheteria":4.92725368515721,"elenco_tam":4.49980967033027,"tam_dialogo":8.65538869016764,"prop_homens":4.35670882668959,".cluster":"2",".fittedPC1":-0.535836269222553,".fittedPC2":-0.313865279812957,".fittedPC3":-0.0324563701925467,".fittedPC4":-0.0652531889951722,"PC1":-0.535836269222553,"PC2":-0.313865279812957,"x":-0.535836269222553,"y":-0.313865279812957},{".rownames":"28","title":"Willard","bilheteria":4.61512051684126,"elenco_tam":4.70048036579242,"tam_dialogo":9.12761072437719,"prop_homens":4.29045944114839,".cluster":"2",".fittedPC1":-0.831097536241394,".fittedPC2":0.199421777765134,".fittedPC3":0.0576819425066045,".fittedPC4":0.0141869693808595,"PC1":-0.831097536241394,"PC2":0.199421777765134,"x":-0.831097536241394,"y":0.199421777765134}],"type":"scatter"},{"name":"3","data":[{".rownames":"2","title":"American Graffiti","bilheteria":6.33682573114644,"elenco_tam":5.07517381523383,"tam_dialogo":9.19766031881881,"prop_homens":4.12713438504509,".cluster":"3",".fittedPC1":0.913210152987177,".fittedPC2":0.351435637679757,".fittedPC3":0.0320440376985832,".fittedPC4":0.278518608012199,"PC1":0.913210152987177,"PC2":0.351435637679757,"x":0.913210152987177,"y":0.351435637679757},{".rownames":"5","title":"Blazing Saddles","bilheteria":6.32435896238131,"elenco_tam":4.60517018598809,"tam_dialogo":8.52951694110507,"prop_homens":4.49980967033027,".cluster":"3",".fittedPC1":0.867938326032024,".fittedPC2":-0.417665002662613,".fittedPC3":-0.135138216431748,".fittedPC4":-0.151418636112704,"PC1":0.867938326032024,"PC2":-0.417665002662613,"x":0.867938326032024,"y":-0.417665002662613},{".rownames":"10","title":"Jaws","bilheteria":7.0057890192535,"elenco_tam":4.70048036579242,"tam_dialogo":9.1369090938903,"prop_homens":4.29045944114839,".cluster":"3",".fittedPC1":1.54969567474945,".fittedPC2":0.101173810385955,".fittedPC3":0.241114058042721,".fittedPC4":-0.048311274572996,"PC1":1.54969567474945,"PC2":0.101173810385955,"x":1.54969567474945,"y":0.101173810385955},{".rownames":"11","title":"Jaws 2","bilheteria":5.94542060860658,"elenco_tam":5.24702407216049,"tam_dialogo":8.98769669570362,"prop_homens":4.21950770517611,".cluster":"3",".fittedPC1":0.54084789915493,".fittedPC2":0.282216554728615,".fittedPC3":-0.267044946561527,".fittedPC4":0.328004808417124,"PC1":0.54084789915493,"PC2":0.282216554728615,"x":0.54084789915493,"y":0.282216554728615},{".rownames":"12","title":"Kramer vs. Kramer","bilheteria":5.90536184805457,"elenco_tam":4.60517018598809,"tam_dialogo":9.28961355287069,"prop_homens":4.38202663467388,".cluster":"3",".fittedPC1":0.446968709774285,".fittedPC2":0.244158369414081,".fittedPC3":0.254169866908333,".fittedPC4":-0.171215280451187,"PC1":0.446968709774285,"PC2":0.244158369414081,"x":0.446968709774285,"y":0.244158369414081},{".rownames":"15","title":"MASH","bilheteria":6.12686918411419,"elenco_tam":4.86753445045558,"tam_dialogo":9.54459586772755,"prop_homens":4.52178857704904,".cluster":"3",".fittedPC1":0.693148965854638,".fittedPC2":0.598188828275783,".fittedPC3":0.133436465393992,".fittedPC4":-0.215158995555809,"PC1":0.693148965854638,"PC2":0.598188828275783,"x":0.693148965854638,"y":0.598188828275783},{".rownames":"17","title":"Rocky","bilheteria":6.16751649088834,"elenco_tam":4.9416424226093,"tam_dialogo":9.0851172272221,"prop_homens":4.53259949315326,".cluster":"3",".fittedPC1":0.741195672985001,".fittedPC2":0.237919145812637,".fittedPC3":-0.140935756956716,".fittedPC4":-0.110283614714347,"PC1":0.741195672985001,"PC2":0.237919145812637,"x":0.741195672985001,"y":0.237919145812637},{".rownames":"18","title":"Smokey and the Bandit","bilheteria":6.20455776256869,"elenco_tam":4.24849524204936,"tam_dialogo":8.58447793822183,"prop_homens":4.45434729625351,".cluster":"3",".fittedPC1":0.716078242314834,".fittedPC2":-0.545792758346054,".fittedPC3":0.161415075065039,".fittedPC4":-0.29010829063084,"PC1":0.716078242314834,"PC2":-0.545792758346054,"x":0.716078242314834,"y":-0.545792758346054},{".rownames":"19","title":"Star Trek: The Motion Picture","bilheteria":5.65248918026865,"elenco_tam":4.70048036579242,"tam_dialogo":9.07566546864958,"prop_homens":4.29045944114839,".cluster":"3",".fittedPC1":0.202082918359815,".fittedPC2":0.108521673439619,".fittedPC3":0.110633952845771,".fittedPC4":-0.00323305698041745,"PC1":0.202082918359815,"PC2":0.108521673439619,"x":0.202082918359815,"y":0.108521673439619},{".rownames":"20","title":"Star Wars: Episode IV - A New Hope","bilheteria":7.49443021503157,"elenco_tam":5.01063529409626,"tam_dialogo":9.21453157659465,"prop_homens":4.53259949315326,".cluster":"3",".fittedPC1":2.06851349905526,".fittedPC2":0.324594658220098,".fittedPC3":-0.0296254814498136,".fittedPC4":-0.133367985417602,"PC1":2.06851349905526,"PC2":0.324594658220098,"x":2.06851349905526,"y":0.324594658220098},{".rownames":"23","title":"The Godfather","bilheteria":6.5366915975913,"elenco_tam":5.24702407216049,"tam_dialogo":9.46039845583127,"prop_homens":4.43081679884331,".cluster":"3",".fittedPC1":1.13314001399891,".fittedPC2":0.685371189082545,".fittedPC3":-0.103486870645855,".fittedPC4":0.049428038379534,"PC1":1.13314001399891,"PC2":0.685371189082545,"x":1.13314001399891,"y":0.685371189082545},{".rownames":"24","title":"The Godfather: Part II","bilheteria":5.5834963087817,"elenco_tam":5.39362754635236,"tam_dialogo":9.74882007252399,"prop_homens":4.34380542185368,".cluster":"3",".fittedPC1":0.194577619407504,".fittedPC2":1.03982637613949,".fittedPC3":-0.0995429396211162,".fittedPC4":0.168920478268306,"PC1":0.194577619407504,"PC2":1.03982637613949,"x":0.194577619407504,"y":1.03982637613949},{".rownames":"25","title":"The Poseidon Adventure","bilheteria":6.16751649088834,"elenco_tam":4.78749174278205,"tam_dialogo":8.68084148294457,"prop_homens":4.20469261939097,".cluster":"3",".fittedPC1":0.721627054034837,".fittedPC2":-0.220704034538469,".fittedPC3":-0.0584217341580211,".fittedPC4":0.167560785987763,"PC1":0.721627054034837,"PC2":-0.220704034538469,"x":0.721627054034837,"y":-0.220704034538469},{".rownames":"26","title":"The Rocky Horror Picture Show","bilheteria":6.38687931936265,"elenco_tam":4.49980967033027,"tam_dialogo":8.41781474743596,"prop_homens":4.20469261939097,".cluster":"3",".fittedPC1":0.91510357907242,".fittedPC2":-0.59931402892179,".fittedPC3":0.039801497358894,".fittedPC4":0.0693895472182893,"PC1":0.91510357907242,"PC2":-0.59931402892179,"x":0.91510357907242,"y":-0.59931402892179},{".rownames":"27","title":"The Sting","bilheteria":6.66695679242921,"elenco_tam":5.01063529409626,"tam_dialogo":8.74941540666365,"prop_homens":4.53259949315326,".cluster":"3",".fittedPC1":1.2452578572758,".fittedPC2":-0.0396634800819494,".fittedPC3":-0.312955612989363,".fittedPC4":-0.0317042742649226,"PC1":1.2452578572758,"PC2":-0.0396634800819494,"x":1.2452578572758,"y":-0.0396634800819494},{".rownames":"29","title":"Young Frankenstein","bilheteria":5.99396142730657,"elenco_tam":4.60517018598809,"tam_dialogo":9.10453531307921,"prop_homens":4.24849524204936,".cluster":"3",".fittedPC1":0.532819996060981,".fittedPC2":0.066827402770662,".fittedPC3":0.239508322649374,".fittedPC4":-0.0266372837284397,"PC1":0.532819996060981,"PC2":0.066827402770662,"x":0.532819996060981,"y":0.066827402770662}],"type":"scatter"}],"xAxis":{"type":"linear","title":{"text":"PC1"},"categories":null}},"theme":{"chart":{"backgroundColor":"transparent"}},"conf_opts":{"global":{"Date":null,"VMLRadialGradientURL":"http =//code.highcharts.com/list(version)/gfx/vml-radial-gradient.png","canvasToolsURL":"http =//code.highcharts.com/list(version)/modules/canvas-tools.js","getTimezoneOffset":null,"timezoneOffset":0,"useUTC":true},"lang":{"contextButtonTitle":"Chart context menu","decimalPoint":".","downloadJPEG":"Download JPEG image","downloadPDF":"Download PDF document","downloadPNG":"Download PNG image","downloadSVG":"Download SVG vector image","drillUpText":"Back to {series.name}","invalidDate":null,"loading":"Loading...","months":["January","February","March","April","May","June","July","August","September","October","November","December"],"noData":"No data to display","numericSymbols":["k","M","G","T","P","E"],"printChart":"Print chart","resetZoom":"Reset zoom","resetZoomTitle":"Reset zoom level 1:1","shortMonths":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"thousandsSep":" ","weekdays":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]}},"type":"chart","fonts":[],"debug":false},"evals":[],"jsHooks":[]}</script>
+<p>Identificandos os grupos, o grupo 1, <strong>BaixaBilheteria</strong>, é um grupo menor cuja característica comum é possuir uma bilheteria bem baixa se comparada a de outros filmes da base de dados. O grupo 2, <strong>SessaoDaTarde</strong>, é constituído por filmes que arriscam menos, no sentido de terem tamanho de elenco, bilheteria e tamanho dos diálogos em valores mais centrais se comparados com o restante da base de dados. O grupo 3, <strong>Sucesso</strong>, é constituído por filmes de alta bilheteria. Dentre esses filmes, temos os conhecidíssimos The Godfather, The Godfather II, Kramer vs Kramer, Star Trek, Star Wars, entre outros.</p>
+<p>Para finalizar, veja a distribuição de grupos orientada pelos vetores que relacionam os PC’s com as variáveis discutidas.</p>
+<pre class="r"><code>p &lt;- autoplot(filmes_pca, 
+         colour = filmes_agrupados$cluster,
+         loadings = TRUE, loadings.colour = &#39;darkblue&#39;,
+         loadings.label = TRUE, 
+         loadings.label.size = 3,
+         loadings.label.colour=&#39;gray41&#39;)
+p</code></pre>
+<p><img src="../../blog/clustering-report-p3_pt-br_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+
+                <br>
+                
+                <p class="back-to-posts"><a href="../../blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-italo-batista-github-io-analisografia" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-123-45', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+
