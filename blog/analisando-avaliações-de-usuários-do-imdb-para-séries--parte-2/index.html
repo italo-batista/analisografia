@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Ítalo Batista">
+<meta name="description" content="Esta análise utiliza dados de séries extraídos do IMDB. Esses dados foram organizados pelo prof. Nazareno e podem ser encontrados neste repositório. Neste estudo estaremos interessados em discutir . Iremos conduzir a análise com base em duas perguntas principais:
+ O número de votos decresce significativamente quanto mais longa for a série? O número de notas mais baixas (abaixo de 5) é influenciado pelo número de votos?  library(&quot;tidyverse&quot;) dados = read_csv(file = here::here(&quot;data/series_from_imdb.">
+
+<meta property="og:title" content="Analisando avaliações de usuários do IMDB para séries — PARTE 2" />
+<meta property="og:description" content="Esta análise utiliza dados de séries extraídos do IMDB. Esses dados foram organizados pelo prof. Nazareno e podem ser encontrados neste repositório. Neste estudo estaremos interessados em discutir . Iremos conduzir a análise com base em duas perguntas principais:
+ O número de votos decresce significativamente quanto mais longa for a série? O número de notas mais baixas (abaixo de 5) é influenciado pelo número de votos?  library(&quot;tidyverse&quot;) dados = read_csv(file = here::here(&quot;data/series_from_imdb." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/blog/analisando-avalia%C3%A7%C3%B5es-de-usu%C3%A1rios-do-imdb-para-s%C3%A9ries--parte-2/" /><meta property="article:published_time" content="2017-05-20T00:00:00&#43;00:00"/>
+<meta property="article:modified_time" content="2017-05-20T00:00:00&#43;00:00"/>
+
+<title>
+
+
+     Analisando avaliações de usuários do IMDB para séries — PARTE 2 
+
+</title>
+<link rel="canonical" href="../../blog/analisando-avalia%C3%A7%C3%B5es-de-usu%C3%A1rios-do-imdb-para-s%C3%A9ries--parte-2/">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="../../css/reset.css?t=2018-10-14%2000%3a09%3a49.192144578%20-0300%20-03%20m%3d%2b0.812524521">
+    <link rel="stylesheet" href="../../css/pygments.css?t=2018-10-14%2000%3a09%3a49.192144578%20-0300%20-03%20m%3d%2b0.812524521">
+    <link rel="stylesheet" href="../../css/main.css?t=2018-10-14%2000%3a09%3a49.192144578%20-0300%20-03%20m%3d%2b0.812524521">
+    
+        <link rel="stylesheet" href="../../css/override.css?t=2018-10-14%2000%3a09%3a49.192144578%20-0300%20-03%20m%3d%2b0.812524521">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="../../img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+            <a href="../../"><img class="avatar" src="https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=50" rcset="https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=100 2x, https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=150 3x, https://gravatar.com/avatar/44d4b12277952d49a0c50ee941096cc5?s=200 4x"></a>
+            
+            <a href="../../"><div class="name">Ítalo Batista</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        <li class="nav-blog"><a href="../../blog/"><span>Blog</span></a></li>
+                    
+                        <li class="nav-about"><a href="../../about/"><span>About</span></a></li>
+                    
+                        <li class="nav-code"><a href="../../code/"><span>Code</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/italo-batista" target="_blank" rel="noopener"><img class="icon" src="../../img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/italohmb" target="_blank" rel="noopener"><img class="icon" src="../../img/twitter.svg" alt="twitter" /></a>
+        
+
+	
+
+        
+
+        
+            <a href="//example.com/@you" target="_blank" rel="noopener"><img class="icon" src="../../img/mastodon.svg" alt="mastodon" /></a>
+        
+
+        
+            <a href="//linkedin.com/in/italo-batista" target="_blank" rel="noopener"><img class="icon" src="../../img/linkedin.svg" alt="linkedin" /></a>
+        
+
+        
+
+        
+            <a href="//instagram.com/italohmb" target="_blank" rel="noopener"><img class="icon" src="../../img/instagram.svg" alt="instagram" /></a>
+        
+
+        
+            <a href="//500px.com/username" target="_blank" rel="noopener"><img class="icon" src="../../img/500px.svg" alt="500px" /></a>
+        
+
+        
+
+        
+            <a href="mailto:you@example.space"><img class="icon" src="../../img/email.svg" alt="email" /></a>
+        
+
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Analisando avaliações de usuários do IMDB para séries — PARTE 2
+
+</div>
+
+                    <div class="initials"><a href="../../">ad</a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Sat May 20 2017 00:00:00 UTC'>May 20, 2017</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>15 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <p><br> Esta análise utiliza dados de séries extraídos do <a href="http://www.imdb.com">IMDB</a>. Esses dados foram organizados pelo prof. Nazareno e podem ser encontrados <a href="https://github.com/nazareno/imdb-series">neste repositório</a>. Neste estudo estaremos interessados em discutir <tema geral, etc, etc>. Iremos conduzir a análise com base em duas perguntas principais:</p>
+<ul>
+<li>O número de votos decresce significativamente quanto mais longa for a série?</li>
+<li>O número de notas mais baixas (abaixo de 5) é influenciado pelo número de votos?</li>
+</ul>
+<pre class="r"><code>library(&quot;tidyverse&quot;)</code></pre>
+<pre class="r"><code>dados = read_csv(file = here::here(&quot;data/series_from_imdb.csv&quot;))</code></pre>
+<p><br></p>
+<div id="panorama-geral" class="section level1">
+<h1>Panorama geral</h1>
+<p>Esses dados são referentes às avaliações que usuários deram a episódios das séries a que assistiram. Eles têm a seguinte estrutura:</p>
+<div id="vars">
+<pre class="some_language"><code>  VARIÁVEL          EXPLICAÇÃO
+  series_name &lt;chr&gt; Nome da série.
+  series_ep   &lt;int&gt; Número do episódio na série desde o primeiro.
+  season      &lt;int&gt; Número da temporada, começando em 1.
+  season_ep   &lt;int&gt; Número do episódio na temporada.
+  url         &lt;chr&gt; Url do IMDB para o episódio (eg &quot;http://www.imdb.com/title/tt5174246/&quot;)
+  Episode     &lt;chr&gt; Título do episódio.
+  UserRating  &lt;dbl&gt; Avaliação geral para o episódio.
+  UserVotes   &lt;dbl&gt; Número de votos para o episódio.
+  r1          &lt;dbl&gt; Proporção de avaliações com nota 1 dadas por usuários.
+  r2          &lt;dbl&gt; Proporção de avaliações com nota 2 dadas por usuários.
+  ...
+  r10         &lt;dbl&gt; Proporção de avaliações com nota 10 dadas por usuários.</code></pre>
+</div>
+<p>Basicamente, cada episódio terá nome, série, número de episódio na série, temporada, número de episódio na temporada, avaliação geral, proporções de avaliações e link para o IMDB.</p>
+<p>Para esta análise, usaremos os dados das seguintes séries, escolhidas por terem tamanhos diferentes (tamanho pode ser número de temporadas ou número de episódios por temporada) e por gosto pessoal:</p>
+<ul>
+<li>Arrow</li>
+<li>Black Mirror</li>
+<li>Game of Thrones (GoT)</li>
+<li>Prison Break</li>
+<li>Vikings</li>
+</ul>
+<pre class="r"><code>dados = dados %&gt;% 
+  filter(series_name %in% c(&quot;Arrow&quot;,  &quot;Dexter&quot;, &quot;Game of Thrones&quot;, &quot;Prison Break&quot;, &quot;Vikings&quot;))</code></pre>
+<p><br></p>
+</div>
+<div id="perguntas" class="section level1">
+<h1>Perguntas</h1>
+<div id="pergunta-1" class="section level2">
+<h2>Pergunta 1</h2>
+<p><strong>O número de votos por episódio decresce quanto mais longa for uma série?</strong></p>
+<p>Esta pergunta parte do pressuposto (de conhecimento de domínio comum, não-científico) de que quanto mais longa for uma série, maior a chance de uma pessoa não assisti-la com a mesma animação e, portanto, menor a motivação para avaliá-la. Além disso, dificilmente uma pessoa começa a assistir uma série a partir do meio. Esses pensamentos nos fazem acreditar que há um decrescimento significativo do número de avaliações por episódio quanto maior for o índice do episódio na série. Tendo como base essa hipótese, <strong>queremos investigar se o número de votos por episódio decresce significativamente ao longo do tempo</strong>.</p>
+<p>Para responder a esta pergunta, daremos mais atenção à variável UserVotes, que guarda o número de votos que o episódio recebeu, e a variável season_ep, que indica o número do eísódio ao longo da série.</p>
+<p>Vamos ver <em>como se comportam essas duas varáveis</em> (para as séries escolhidas), a fim de termos uma primeira visão sobre os dados e verificar a existência de valores extremos.</p>
+<div id="grafico1">
+<pre class="r"><code>options(scipen=10000)
+
+dados %&gt;% 
+  ggplot( aes(x = series_name, y = UserVotes, color = series_name)) + 
+  geom_jitter(width = .4, height = .07, alpha = .6) +
+  geom_boxplot(alpha = .4, width = 0.95, outlier.color = &quot;white&quot;, outlier.size = 0) +
+  
+  theme(axis.title.x = element_blank(), 
+        legend.position = &quot;none&quot;, 
+        plot.title = element_text(hjust = 0.5)) +
+  labs(title = &#39;Gráfico 1 - Distribuição dos valores para número de avaliações por episódio&#39;, y = &#39;Número de votos (UserVotes)&#39;)</code></pre>
+<p><img src="../../blog/imdb-series-report-p2_pt-br_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<p>Um dos primeiros aspectos que chamam a atenção no gráfico acima é o fato da maioria das séries terem pontos muito concentrados. Isso só acontece porque uma quantidade considerável de episódios de GoT recebeu um número muito abundante de votos. A discrepância é grande entre os episódios da própria série. Qual teria sido o motivo? Quais episódios de GoT empolgaram tanto o público ao ponto de receberem tantos votos? Será que as esses episódios são as season finales? Ou a primeira temporada, ou a segunda? Ao longo desta análise poderemos analisar ainda esses aspectos.</p>
+<p>Iremos plotar o mesmo gráfico, agora sem os dados de GoT, para que seja possível visualizar melhor as outras séries.</p>
+<div id="grafico2">
+<pre class="r"><code>dados %&gt;% 
+  filter(series_name != &quot;Game of Thrones&quot;) %&gt;%
+  ggplot( aes(x = series_name, y = UserVotes, color = series_name)) + 
+  geom_jitter(width = .4, height = .07, alpha = .6) +
+  geom_boxplot(alpha = .4, width = 0.95, outlier.color = &quot;white&quot;, outlier.size = 0) +
+
+  theme(axis.title.x = element_blank(), 
+        legend.position = &quot;none&quot;, 
+        plot.title = element_text(hjust = 0.5)) +
+  labs(title = &#39;Gráfico 2 - Distribuição dos valores para número de avaliações por episódio (sem GoT)&#39;, y = &#39;Número de votos (UserVotes)&#39;)</code></pre>
+<p><img src="../../blog/imdb-series-report-p2_pt-br_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<p>Primeiro, vamos entender as informações estatísticas que um gráfico tipo boxplot pode nos dar. Para cada série, desenhamos um boxplot. Este tipo de gráfico utiliza-se do conceito de quartil para distribuir e desenhar os valores. Um quartil é qualquer um dos três valores do conjunto que divide os dados, se ordenados, em quatro partes iguais, em que cada parte representa 1/4 da amostra.</p>
+<p>O primeiro quartil é o valor aos 25% da amostra ordenada. No gráfico, ele é identificado como a linha inferior da caixa.</p>
+<p>O segundo quartil representa os valores até o qual se encontram 50% da amostra ordenada. No gráfico acima, as linhas horizontais dentro das caixas identificam o segundo quartil. Basicamente, o segundo quartil ou <em>mediana</em> é o valor central que divide os valores maiores dos menores. No nosso caso, agrupa 50% dos episódios que receberam mais votos acima e 50% abaixo.</p>
+<p>O terceiro quartil ou quartil superior, representa valor <em>a partir do qual</em> se encontram 25% dos valores mais elevados.</p>
+<p>Os valores desenhados para fora da extensão das linhas verticais perpendiculares às caixas são considerados valores extremos e que se dispersam em muito dos outros valores do conjunto.</p>
+<p>Semelhante ao caso de GoT, em Arrow e Dexter há episódios cujo número de votos ultrapassa em muito a quantidade que os outros episódios receberam. Em Arrow, além disso, vemos que há uma grande concentração de pontos abaixo do quadrado, ou seja, há um alto número de episódios que foram menos avaliados que os outros. Em algum momento, mais cedo ou mais tarde na série, Arrow começa a ter poucos usuários que a avaliam. Qual seria a razão?</p>
+<p>Prison Break e Vikings parecem ser menos dispersas, no sentido de que seus episódios são sempre avaliados por um número semelhante de usuários.</p>
+<p>Vamos ver agora como se comporta o número de votos por episódio ao longo das séries, para identificar crescimento/decrescimento ou continuidade.</p>
+<div id="grafico3">
+<pre class="r"><code>dados %&gt;% 
+  ggplot(aes(x = series_ep, y = log(UserVotes), color = series_name)) + 
+  geom_jitter(width = 0.6, alpha = 0.6, size=1) +
+  geom_smooth(alpha=0.3) +
+  scale_y_continuous(expand=c(0,0)) +
+  facet_grid(series_name ~ .) +
+  
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), legend.position=&quot;none&quot;) +
+  labs(title = &#39;Gráfico 3 - Número de votos ao longo da série&#39;, x = &#39;Número do episódio (series_ep)&#39;, y = &#39;Log do número de votos (log de UserVotes)&#39;)</code></pre>
+<p><img src="../../blog/imdb-series-report-p2_pt-br_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<p>Para este gráfico, decidimos usar log de UserVotes ao invés de UserVotes, pois os altos valores em GoT dificultam a visualização das linhas e pontos nas outras séries.</p>
+<p>A partir do gráfico vemos que GoT tem o crescimento mais acentuado. Após o 50º episódio, os usuários começaram a fazer questão de avaliar a série. Em Dexter, também o número de votos por episódio pouco variou até certo momento. Nessa série, esse momento foi por volta do 75º episódio, quando mais usuários começaram a avaliar os episódios.</p>
+<p>As outras três séries apresentam um decrescimento. Ou seja, a partir de algum momento menos usuários avaliaram a série. Em Arrow, que dentre as cinco é a de maior tamanho, o número de usuários que a avaliava se manteve até por volta do 60º episódio. A partir daí, o decrescimento da audiência é significativo. Vamos converter o valor dado em log no gráfico para a quantidade de número de votos utilizando a função inversa de log, a função exponencial. Então, em valores, Arrow começa e mantém um número de <strong>exp(8.1) ~&gt; 3294</strong> (aprox) avaliações por episódio. No fim da série, esse número cai para <strong>exp(7) ~&gt; 1100</strong> (aprox). É um decrescimento significativo.</p>
+<p>Em Prison Break o caso é bastante semelhante. O decrescimento começa a partir do 30º episódio e quando chega no 60º, os próximos episódios recebem em média <strong>exp(7.1) ~&gt; 1200</strong>. Por fim, Vikings tem um decrescimento mais tênue que Arrow e Prison Break.</p>
+<p>Para entendermos como o tamanho da série influencia o número de usuários que a avaliam, podemos calcular a correlação entre as variáveis UserVotes e series_ep. A correlaçaõ é um índice que indica como duas variáveis variam juntas. A ideia aqui é entender se quanto mais distante o episódio for do início da série, menos votos ele recebe. Vamos ver a correlação entre UserVotes e series_ep para cada umas das séries.</p>
+<pre class="r"><code>dados.corr = dados %&gt;% 
+  group_by(series_name) %&gt;% 
+  summarise(correlacao = cor(UserVotes, series_ep, method = &quot;pearson&quot;))
+
+dados.corr %&gt;%
+  ggplot(aes(x = reorder(series_name, correlacao), y = correlacao, fill = series_name)) +
+  geom_bar(stat = &quot;identity&quot;, alpha = .7, width = .75) +
+  
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(legend.position=&quot;none&quot;) +
+  theme(axis.title.y=element_blank()) +
+  labs(title = &#39;Gráfico 4 - Correlação entre UserVotes e series_ep por série&#39;, 
+       y = &#39;Correlação entre o número do episódio na série e o número de avaliações que recebeu &#39;) +
+  coord_flip() </code></pre>
+<p><img src="../../blog/imdb-series-report-p2_pt-br_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>O índice de correlação varia entre -1 e 1. Quanto mais próximo de -1 ou 1, mais forte é essa relação. Se positiva, então as variáveis crescem juntas. Quando negativa, então elas são inversas. Ou seja, enquanto uma cresce, a outra decresce.</p>
+<p>Como esperado, a partir do <a href="#grafico3">gŕafico anterior</a>, Arrow e Prison Break têm correlações negativas e fortes. Ou seja, o número de avaliações por episódio foi caindo ao longo do tempo. Em Vikings, apesar de negativa, a correlação é fraca, então a intensidade com que o número de avaliações por episódio foi caindo ao longo do tempo pode não ser representativa. Em Dexter as variáveis praticamente não se correlacionam. Já em GoT, quanto maior o índice do episódio, mais votos ele recebeu. Ou seja, a temporada foi ficando cada vez mais popular.</p>
+<p><em>Em geral, parece que os usuários tendem continuar avaliando a série a que assistem. Não há exatamente um padrão. Uma série pode ficar cada vez mais popular com o tempo, como GoT, ou se manter, como Dexter. Em algumas séries, elas ficam menos popular com o tempo, mas outros fatores podem estar influenciado.</em></p>
+<p>Devemos admitir que é interessante o fato de termos duas séries (Dexter e GoT) que tiveram um crescimento no número de avaliações. Ou seja, usuários que não costumavam avaliar uma série fizeram questão de avaliar determinados episódios. Qual teria sido a motivação? Gostaram muito do episódio? Odiaram? Vamos investigar!</p>
+<div id="pergunta-1.1" class="section level3">
+<h3>Pergunta 1.1</h3>
+<p><strong>Quando os usuários votaram mais? Quando odiaram/amaram um episódio?</strong></p>
+<p>Primeiro vamos ver como as diferentes séries foram avaliadas ao longo de seus episódios. Para isso, vamos relacionar o episódio (series_ep), a partir do primeiro, à sua avaliação geral (UserRating).</p>
+<pre class="r"><code>dados$categoria = ifelse(dados$UserRating &gt;= 9, &quot;otimo&quot;, 
+                  ifelse(dados$UserRating &gt;= 8, &quot;bom&quot;,       
+                  ifelse(dados$UserRating &gt;= 7, &quot;medio&quot;, &quot;ruim&quot;)))
+
+dados %&gt;%
+  ggplot(aes(x = series_ep, y = UserRating)) +
+  #stat_summary(fun.y=mean, geom=&quot;line&quot;, lwd=0.5, aes(group=10)) +
+  geom_smooth(methoed=&quot;loess&quot;) +
+  geom_point(alpha = 0.6, size = 1, aes(color=categoria)) +
+  scale_color_manual(name=&quot;Avaliação do episódio&quot;, values = c(&quot;otimo&quot;=&quot;darkblue&quot;, &quot;bom&quot;=&quot;green&quot;, &quot;medio&quot;=&quot;orange&quot;, &quot;ruim&quot;=&quot;red&quot;), labels=c(&quot;Bom&quot;, &quot;Médio&quot;, &quot;Ótimo&quot;, &quot;Ruim&quot;)) +
+  facet_wrap(~ series_name, ncol = 2) +
+
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(legend.position=&quot;right&quot;) +
+  labs(title = &#39;Gráfico 5 - Avaliações das séries ao longo do tempo&#39;, y = &#39;Avaliação do episódio (UserRating)&#39;, x = &#39;Número do episódio (series_ep)&#39;)</code></pre>
+<p><img src="../../blog/imdb-series-report-p2_pt-br_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Se lembrarmos do <a href="#grafico3">gráfico três</a>, para as duas séries cujo número de avaliações foi caindo ao longo do tempo (Arrow e Prison Break), vemos que as notas dos episódios também não se mantiveram parecidas. Em Arrow, apenas um perído específico teve avaliações muito diferentes (e médias/ruins). Em Prison Break, mais perto do 70 º episódio, as notas caíram ligeiramente.</p>
+<p>Outra fato interessante que podemos ver é que as duas séries que tiveram mais avaliações ao decorrer do tempo (GoT e Dexter) se comportam de maneiras distintas. Enquanto que em GoT o número de avaliações cresceu com o número da nota por episódio, em Dexter o número de avaliações cresceu cada vez que as pessoas gostavam menos dos episódios.</p>
+<p>Outra boa abordagem é entender como se relacionam as variáveis UserVotes (o número de avaliações que um episódio recebeu) e UserRating (a avaliação geral dada para o episódio).</p>
+<pre class="r"><code>dados %&gt;% 
+  ggplot(aes(x = UserRating, y = log(UserVotes))) + 
+  geom_smooth(method = &quot;loess&quot;, color=&quot;yellow&quot;) +
+  geom_jitter(width = 0.2, alpha = 0.6, size = 1, aes(color = categoria)) +
+  scale_color_manual(name=&quot;Avaliação do episódio&quot;, values = c(&quot;otimo&quot;=&quot;darkblue&quot;, &quot;bom&quot;=&quot;green&quot;, &quot;medio&quot;=&quot;orange&quot;, &quot;ruim&quot;=&quot;red&quot;), labels=c(&quot;Bom&quot;, &quot;Médio&quot;, &quot;Ótimo&quot;, &quot;Ruim&quot;)) +
+  facet_grid(series_name ~ .) +
+  
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), legend.position=&quot;bottom&quot;) +
+  labs(title = &#39;Gráfico 6 - Número de votos e avaliação&#39;, x = &#39;Avaliação do episódio (UserRating)&#39;, y = &#39;Log do número de votos (UserVotes)&#39;)</code></pre>
+<p><img src="../../blog/imdb-series-report-p2_pt-br_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Uma das coisas que podemos tirar desse gráfico é que episódios avaliados como médios ou bons (notas entre 7 e 9), pontos em laranja e verde, no geral receberam menos votos que os episódios melhor ou pior avaliados em cada série. Em GoT, os melhores episódios foram os que receberam mais votos!</p>
+<p>Vamos ver melhor algumas séries, sem plotar os dados sobre GoT.</p>
+<pre class="r"><code>dados %&gt;% 
+  filter(series_name != &quot;Game of Thrones&quot;) %&gt;%
+  ggplot(aes(x = UserRating, y = UserVotes, color=categoria)) + 
+  geom_smooth(method = &quot;loess&quot;, color=&quot;yellow&quot;) +
+  geom_jitter(width = 0.2, alpha = 0.6, size = 2) +
+  scale_color_manual(name=&quot;Avaliação do episódio&quot;, values = c(&quot;otimo&quot;=&quot;darkblue&quot;, &quot;bom&quot;=&quot;green&quot;, &quot;medio&quot;=&quot;orange&quot;, &quot;ruim&quot;=&quot;red&quot;), labels=c(&quot;Bom&quot;, &quot;Médio&quot;, &quot;Ótimo&quot;, &quot;Ruim&quot;)) +
+  facet_grid(series_name ~ .) +
+  
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), legend.position=&quot;right&quot;) +
+  labs(title = &#39;Gráfico 7 - Número de votos e avaliação&#39;, x = &#39;Avaliação do episódio&#39;, y = &#39;Número de votos&#39;)</code></pre>
+<p><img src="../../blog/imdb-series-report-p2_pt-br_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Como em GoT, os episódios melhor avaliados são aqueles que recebem mais votos. Também descobrimos que os avaliados com uma nota geral abaixo de seis recebem muitos votos também.</p>
+<p><em>Nesse sentido, a partir da informações dos últimos três gráficos, verificamos que episódios avaliados com notas acima de 9 ou abaixo de 6 no geral recebem um número de votos muito maior que os outros episódios, o que pode significar que quando as pessoas gostam muito ou odeiam um episódio elas fazem questão de avaliar.</em></p>
+<p><br></p>
+</div>
+</div>
+<div id="pergunta-2" class="section level2">
+<h2>Pergunta 2</h2>
+<p><strong>As season finales costumam ser melhor avaliadas que os outros episódios?</strong></p>
+<p>Nossa segunda pergunta norteadora parte da hipótese de que as season finales, por serem desfechos de um enredo e provavelmente terem mais carga emocional, geralmente conquistam mais usuários e portanto têm mais chances de serem melhor avalidas. Vamos analisar.</p>
+<p>Para essa análise, vamos ver como se comportam as notas dos episódios na temporada ao londo das temporadas, a fim de verificar que episódio da temporada geralmente tem a nota máxima.</p>
+<pre class="r"><code>season_max = dados %&gt;%
+  group_by(series_name, season) %&gt;%
+  summarise(UserRating = max(UserRating))
+
+season_max$max_season_rate = TRUE
+
+dados.max.season.rate = left_join(dados, season_max, by = c(&quot;series_name&quot;, &quot;season&quot;, &quot;UserRating&quot;))
+dados.max.season.rate$max_season_rate = ifelse(is.na(dados.max.season.rate$max_season_rate), FALSE, TRUE)
+
+dados.max.season.rate %&gt;% 
+  ggplot(aes(x=season_ep, y=UserRating, group=series_name)) + 
+  geom_jitter(alpha=0.6, aes(color=max_season_rate)) +
+  scale_color_manual(name=&quot;Nota máxima na temporada:&quot;, values = c(&quot;FALSE&quot;=&quot;darkblue&quot;, &quot;TRUE&quot;=&quot;red&quot;), labels=c(&quot;Não&quot;, &quot;Sim&quot;)) +
+  facet_grid(series_name ~ season) +
+  
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = &quot;bottom&quot;) +
+  labs(title = &#39;Gráfico 8 - Avaliação dos episódios ao longo das temporadas&#39;, y = &#39;Avaliação do episódio (UserRating)&#39;, x = &#39;Índice do episódio na temporada (season_ep) por temporadas (season)&#39;)</code></pre>
+<p><img src="../../blog/imdb-series-report-p2_pt-br_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Pelo gráfico, vemos que aparentemente não há um padrão. Em algumas séries, como GoT, a nota mais alta geralmente é de alguns dos últimos episódios da temporada. Em outras séries, como Dexter, nas últimas temporadas são os primeiros episódios que têm a nota máxima.</p>
+<p>Como nosso objetivo é verificar se as season finales são as melhores avaliadas, vamos plotar o mesmo gráfico acima, agora dando destaque (ponto vermelho) apenas quando o episódio é o último da temporada e tem a nota máxima.</p>
+<pre class="r"><code>season_finales = dados %&gt;%
+  group_by(series_name, season) %&gt;%
+  summarise(season_ep = max(season_ep))
+
+season_finales$is_season_finale = TRUE
+
+dados.season.finales = left_join(dados.max.season.rate, season_finales, by = c(&quot;series_name&quot;, &quot;season&quot;, &quot;season_ep&quot;))
+dados.season.finales$is_season_finale = ifelse(is.na(dados.season.finales$is_season_finale), FALSE, TRUE)
+dados.season.finales$max_rate_season_finale = ifelse(dados.season.finales$is_season_finale == TRUE &amp;
+                                                     dados.season.finales$max_season_rate == TRUE, TRUE, FALSE)
+
+dados.season.finales %&gt;% 
+  ggplot(aes(x=season_ep, y=UserRating, group=series_name)) + 
+  geom_jitter(alpha=0.6, aes(color=max_rate_season_finale)) +
+  scale_color_manual(name=&quot;Season finale e nota máxima na temporada:&quot;, values = c(&quot;FALSE&quot;=&quot;darkblue&quot;, &quot;TRUE&quot;=&quot;red&quot;), labels=c(&quot;Não&quot;, &quot;Sim&quot;)) +
+  facet_grid(series_name ~ season) +
+  
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = &quot;bottom&quot;) +
+  labs(title = &#39;Gráfico 9 - Avaliação dos episódios ao longo das temporadas&#39;, y = &#39;Avaliação do episódio (UserRating)&#39;, x = &#39;Índice do episódio na temporada (season_ep) por temporadas (season)&#39;)</code></pre>
+<p><img src="../../blog/imdb-series-report-p2_pt-br_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Pelo gráfico, verificamos que dificilmente as season finales são os episódios melhor avaliados nas temporadas.</p>
+<p>É curioso que que nem todas as season finales sejam as melhores avaliadas, visto que geralmente esses episódios são os de maior carga dramática. Isso não significa que os usuários não gostaram da season finale; significa apenas que há outro episódio na temporada de que gostaram mais. Então precisamos nos fazer outra pergunta para avaliar a aceitação dos usuários à season finale. Vamos verificar a proporção de haters (usuários que detestaram) e lovers (usuários muito satisfeitos) nas season finales. Será que no geral há mais haters ou mais lovers?</p>
+<div id="pergunta-2.1" class="section level3">
+<h3>Pergunta 2.1</h3>
+<p><strong>Há mais haters ou lovers de season finales?</strong></p>
+<p>Como apresentamos no <a href="#vars">início</a>, cada episódio contém variáveis nomeadas r1, r2, r3, …, r10, em que cada uma corresponde a proporção de usuários que votaram naquela nota (ex: se r1 = 0.1, então 10% dos usuários votaram 1 em determinado episódio).</p>
+<p>Vamos fazer a seguinte consideração:</p>
+<pre class="some_language"><code> Hater -&gt; avaliou abaixo de 6 (r1, r2, r3, r4, r5)
+ Likers -&gt; avaliou entre 6 e 8 (r6, r7, r8)
+ Lover -&gt; avaliou acima ou igual 9 (r9, r10)</code></pre>
+<p>Vamos ver agora como se distribuiu essa proporação nas season finales das temporadas.</p>
+<pre class="r"><code>dados.prop = dados.season.finales
+dados.prop$haters = rowSums(dados.prop[,c(&#39;r1&#39;, &#39;r2&#39;, &#39;r3&#39;, &#39;r4&#39;, &#39;r5&#39;)], na.rm=TRUE)
+dados.prop$lovers = rowSums(dados.prop[,c(&#39;r9&#39;, &#39;r10&#39;)], na.rm=TRUE)
+dados.prop$likers = rowSums(dados.prop[,c(&#39;r6&#39;, &#39;r7&#39;, &#39;r8&#39;)], na.rm=TRUE)
+
+dados.s.f.p = dados.prop %&gt;%
+  filter(is_season_finale == TRUE) %&gt;%
+  select(-url, -Episode, -max_season_rate, -max_rate_season_finale, -is_season_finale)
+
+dados.s.f.p %&gt;% 
+  ggplot() + 
+  geom_bar(stat = &quot;identity&quot;, aes(x=1, y=haters, fill=&quot;Haters&quot;)) +
+  geom_bar(stat = &quot;identity&quot;, aes(x=2, y=likers, fill=&quot;Likers&quot;)) +
+  geom_bar(stat = &quot;identity&quot;, aes(x=3, y=lovers, fill=&quot;Lovers&quot;)) +
+  scale_fill_manual(name=&quot;Categoria de usuário:&quot;, values = c(&quot;Haters&quot;=&quot;orange&quot;, &quot;Likers&quot;=&quot;darkgrey&quot;, &quot;Lovers&quot;=&quot;deeppink&quot;)) +
+  facet_grid(series_name ~ season) +
+  
+  
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), legend.position = &quot;bottom&quot;) +
+  theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  labs(title = &#39;Gráfico 10 - Aceitação de usuários às season finales&#39;, y = &#39;Proporção por categoria de usuário&#39;)</code></pre>
+<p><img src="../../blog/imdb-series-report-p2_pt-br_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Pelo gráfico vemos que <strong>em geral a maioria dos usuários amam as season finales</strong>. Há alguns casos atípicos, como a última temporada de Dexter, em que a maioria do público odiou, ou as quartas temporadas de Arrow e de Prison Break, em que o público se dividiu entre gostar ou amar, e a primeira temporada de Vikings, em que menos pessoas amaram.</p>
+<p><br> <br></p>
+<hr />
+<p>Gráfico extra! :)</p>
+<pre class="r"><code>dados %&gt;% 
+  ggplot(aes(group = series_name, x = series_ep, y = UserRating)) + 
+  geom_boxplot(alpha = 0.6, outlier.colour = NA) +
+  geom_jitter(alpha = 0.6, size = 1, aes(color=categoria)) +
+  scale_color_manual(values = c(&quot;otimo&quot;=&quot;darkblue&quot;, &quot;bom&quot;=&quot;green&quot;, &quot;medio&quot;=&quot;orange&quot;, &quot;ruim&quot;=&quot;red&quot;)) +
+  facet_grid(~series_name) +
+  
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5), legend.position=&quot;none&quot;) +
+  labs(title = &#39;Distribuição dos episódios ao longo do tempo&#39;, y = &#39;Avaliação do episódio&#39;)</code></pre>
+<p><img src="../../blog/imdb-series-report-p2_pt-br_files/figure-html/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+</div>
+
+                <br>
+                
+                <p class="back-to-posts"><a href="../../blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-italo-batista-github-io-analisografia" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-123-45', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+  
+
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+
