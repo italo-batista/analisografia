@@ -7,10 +7,8 @@ Instructions about publishing new content at [source repo](https://github.com/it
 
 
 # Contents
-## Data visualization
+## Data visualization      
 
-[some dt visus of mine](https://observablehq.com/@italo-batista?tab=notebooks)
----
 - [What are data visualizations?](https://drive.google.com/file/d/1dJawrl341lteEoLoLQg_FsoSY4gNFNcZ/view?usp=sharing)
 - [Intro to visualizations](https://journalismcourses.org/courses/DE0618/1TruthfulArtFIRSTPAGES.pdf)
 - [Visualizations to explore](https://www.informationisbeautifulawards.com/showcase?acategory=website&page=1&pcategory=short-list&type=awards)   
@@ -42,6 +40,8 @@ Instructions about publishing new content at [source repo](https://github.com/it
 - [Color Picker](http://tristen.ca/hcl-picker/#/hlc/6/1/15534C/E2E062)
 - [ Classic color palettes for data](http://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3)
 ---
-
----
 - [Cheatsheet with Types of Marks, of Channels, of Data..](https://docs.google.com/document/d/19PvC_WHNHnGEnsTeuzPHDFLO88DVbEE_2Id-kIfeIAs/edit?usp=sharing)   
+- [Data Viz Cataloguw](https://datavizcatalogue.com/index.html)
+- [Visual Vocabulary: types of realtions between data](https://journalismcourses.org/courses/DE0618/Visual-vocabulary.pdf)
+- [Visual encoding](https://www.targetprocess.com/articles/visual-encoding/)
+- [some dt visus of mine](https://observablehq.com/@italo-batista?tab=notebooks)
