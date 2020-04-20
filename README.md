@@ -13,6 +13,7 @@ Instructions about publishing new content at [source repo](https://github.com/it
 - [Intro to visualizations](https://journalismcourses.org/courses/DE0618/1TruthfulArtFIRSTPAGES.pdf)
 - [Visualizations to explore](https://www.informationisbeautifulawards.com/showcase?acategory=website&page=1&pcategory=short-list&type=awards)   
 - [Visual theories applied data](https://www.ibm.com/design/v1/language/experience/data-visualization/visualization/)
+- [Based on the Question, Which chart to use?](https://makingdatavisual.github.io/figurelist.html)
 ---
 - [Data abstraction](https://drive.google.com/file/d/1hPf0LOaBywnApBl8P93Un1T8a0dtJYlL/view?usp=sharing)
 - [Task Abstraction](https://drive.google.com/file/d/1MhQwHvRuzW8Z5-nNxnV8NiLk9il50W-8/view?usp=sharing)
